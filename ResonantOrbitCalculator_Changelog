@@ -1,0 +1,76 @@
+1.6.4.1
+	Updated version for all 1.4
+	Updated ToolbarController usage to register 
+	Removed Blizzy option from settings
+
+1.6.4
+	Updated for KSP 1.4.1
+	Added support for ClickThroughblocker
+	Added support for ToolbarController
+	Added new small icon for Blizzy toolbar
+
+1.6.3
+	Updated for KSP 1.3.1
+
+1.6.2.1
+	Really Fixed exception on exiting editor this time.  Was actually a problem in the VAB
+	Fixed build to release a build compile rather than a debug compile
+
+1.6.2
+	Fixed exception on exiting  editor
+
+1.6.1
+	Added option in Settings to disable/enable in both VAB and SPH
+	Added option in settings as to whether it's active at all in the game 
+	Added toggle on analysis window to toggle between the stock CoL and this mod's CoL
+
+1.6.0
+- Updaed for 1.3
+
+1.5.1
+- Added Settings page
+- Added option to make tooltips optional
+- Addedoption to make the autoupdate default to on
+- Added option to specify using last selected planet 
+- Fixed bug when closing planet selection window
+
+CorrectCoL 1.5.0
+- Adoption by Linuxgurugamer
+- Added AutoUpdate toggle
+- Added Destroy() and lines to remove gameevents whch were added in the Start()
+- Changed GraphWindow from static code to dynamic, added support code
+- Added tooltips to entry field labels
+- made window background solid
+- Added selectable planets
+
+CorrectCoL 1.4.5
+- test for KSP-AVC.
+
+CorrectCoL 1.4.4
+- fix toolbar bug.
+
+CorrectCoL 1.4.3
+- KSP 1.2 compatibility.
+
+CorrectCoL 1.4.1
+- prevented editor window click-through.
+
+CorrectCoL 1.4
+- KSP 1.1.3 transparency fix.
+- Fixed errors in L\D calculations.
+
+
+CorrectCoL 1.3
+- Fixed bug with incorrect drag of parachutes.
+- L/D ratio graph.
+- Level flight line.
+
+CorrectCoL 1.2
+- KSP v1.1 beta adaptation, aerobreaks support.
+
+CorrectCoL 1.1
+- a couple of bugfixes.
+- static analysis graph.
+
+Initial release
+- Initial release.
