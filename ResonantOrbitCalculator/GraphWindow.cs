@@ -220,12 +220,14 @@ namespace ResonantOrbitCalculator
 
             GUILayout.Label(new GUIContent("Number of satellites:", "Total number of satellites to arrange"));
 
-            sNumSats = GUILayout.TextField(sNumSats);
+            var newsNumSats = GUILayout.TextField(sNumSats);
+ 
             int butW = 19;
             if (GUILayout.Button("^", GUILayout.Width(butW)))
             {
                 numSats++;
                 sNumSats = numSats.ToString();
+                newsNumSats = sNumSats;
                 draw = true;
             }
             if (GUILayout.Button("v", GUILayout.Width(butW)))
@@ -233,14 +235,21 @@ namespace ResonantOrbitCalculator
                 if (numSats > 1)
                     numSats--;
                 sNumSats = numSats.ToString();
+                newsNumSats = sNumSats;
                 draw = true;
             }
-
-            bValidNumSats = int.TryParse(sNumSats, out iTmp);
-            if (!bValidNumSats)
-                sNumSats = numSats.ToString();
-            else
-                numSats = iTmp;
+            if (sNumSats != newsNumSats)
+            {
+                bValidNumSats = int.TryParse(newsNumSats, out iTmp);
+                if (!bValidNumSats)
+                    sNumSats = numSats.ToString();
+                else
+                {
+                    numSats = iTmp;
+                    sNumSats = newsNumSats;
+                    draw = true;
+                }
+            }
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Label(new GUIContent("Altitude:", "Orbital altitude"));
