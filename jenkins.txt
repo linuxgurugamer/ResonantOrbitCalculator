@@ -27,7 +27,7 @@
 1:ResonantOrbitCalculator, ResonantOrbitCalculator.version
 
 # 2:PROJNAME, PROJFILE, VERSIONFILE, PLUGINSFOLDER
-2:ResonantOrbitCalculator,source/ResonantOrbitCalculator.csproj,ResonantOrbitCalculator.version,GameData/ResonantOrbitCalculator/Plugins
+2:ResonantOrbitCalculator,ResonantOrbitCalculator/ResonantOrbitCalculator.csproj,ResonantOrbitCalculator.version,GameData/ResonantOrbitCalculator/Plugins
 
 # 3:SOURCEFILE, DESTDIR
 3:ResonantOrbitCalculator.version,GameData/ResonantOrbitCalculator
