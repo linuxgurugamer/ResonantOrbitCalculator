@@ -19,15 +19,15 @@ namespace ResonantOrbitCalculator
         public override string Section { get { return "Resonant Orbit Calculator"; } }
         public override string DisplaySection { get { return "Resonant Orbit Calculator"; } }
         public override int SectionOrder { get { return 1; } }
-        public override bool HasPresets { get { return true; } }
+        public override bool HasPresets { get { return false; } }
 
 
-        [GameParameters.CustomParameterUI("Individualize planet colors")]
-        public bool individualizePlanetColors = true;
+        [GameParameters.CustomParameterUI("Show planet image",
+            toolTip ="Show an image of the planet at the center")]
+        public bool showPlanetImage = true;
 
-
-
-        [GameParameters.CustomParameterUI("Tooltips")]
+        [GameParameters.CustomParameterUI("Tooltips",
+            toolTip ="Show tooltips")]
         public bool tooltips = true;
 
         [GameParameters.CustomParameterUI("Use last selected planet")]

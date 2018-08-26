@@ -82,8 +82,8 @@ namespace ResonantOrbitCalculator
                  ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.VAB,
                  MODID,
                 "ResonantOrbitCalculatorButton",
-                "ResonantOrbitCalculator/Images/ResonantOrbit_38",
-                "ResonantOrbitCalculator/Images/ResonantOrbit_24",
+                "ResonantOrbitCalculator/PluginData/Images/ResonantOrbit_38",
+                "ResonantOrbitCalculator/PluginData/Images/ResonantOrbit_24",
                 MODNAME
             );
 

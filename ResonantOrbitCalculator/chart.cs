@@ -89,9 +89,9 @@ namespace ResonantOrbitCalculator
             if (atmosphere_r > 0)
                 GraphWindow.graph_texture.DrawFilledCircle(GraphWindow.HALF, GraphWindow.HALF, (int)(atmosphere_r), liteGrey);
 
-            if (PlanetSelection.planetImg == null)
+            if (PlanetSelection.planetImg == null || !HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().showPlanetImage)
             {
-                planetColor = HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().individualizePlanetColors ? b.body.atmosphericAmbientColor : darkGrey;
+                //planetColor = HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().individualizePlanetColors ? b.body.atmosphericAmbientColor : darkGrey;
                 GraphWindow.graph_texture.DrawFilledCircle(GraphWindow.HALF, GraphWindow.HALF, (int)body_r, planetColor);
             } else
             {

@@ -271,7 +271,6 @@ public class TextureScaler
 
         BilinearScale(0, newHeight);
 
-        tex.Resize(newWidth, newHeight);
         Texture2D newTex = new Texture2D(newWidth, newHeight);
         newTex.SetPixels(newColors);
         newTex.Apply();

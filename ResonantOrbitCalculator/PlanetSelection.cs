@@ -38,7 +38,7 @@ namespace ResonantOrbitCalculator
         {
             if (planetImg != null)
                 Object.Destroy(planetImg);
-
+            Log.Info("PlanetSelction.loadBodyImage: " + name);
             planetImg = LoadPNG(PlanetSelector.filePath + selectedBody.name + ".png");
         }
 
