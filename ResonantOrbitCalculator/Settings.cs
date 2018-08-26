@@ -22,19 +22,16 @@ namespace ResonantOrbitCalculator
         public override bool HasPresets { get { return true; } }
 
 
-        [GameParameters.CustomParameterUI("Active in mod")]
-        public bool activeInGame = true;
+        [GameParameters.CustomParameterUI("Individualize planet colors")]
+        public bool individualizePlanetColors = true;
 
 
 
         [GameParameters.CustomParameterUI("Tooltips")]
         public bool tooltips = true;
 
-        [GameParameters.CustomParameterUI("Initial AutoUpdate")]
-        public bool autoupdate = false;
-
         [GameParameters.CustomParameterUI("Use last selected planet")]
-        public bool useLastPlanet = false;
+        public bool useLastPlanet = true;
 
 
 

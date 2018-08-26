@@ -25,7 +25,7 @@ namespace ResonantOrbitCalculator
      })]
     public class ResonantOrbitCalculator_Persistent : ScenarioModule
     {
-        static public ResonantOrbitCalculator_Persistent Instance;        
+        static public ResonantOrbitCalculator_Persistent Instance;
 
         [KSPField(isPersistant = true)]
         public string lastSelectedPlanet = "";
@@ -39,8 +39,8 @@ namespace ResonantOrbitCalculator
         {
             Debug.Log("CorrectCoL_Persistent.Start");
             if (HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().useLastPlanet)
-            if (lastSelectedPlanet != "")
-                PlanetSelection.setSelectedBody(lastSelectedPlanet);
+                if (lastSelectedPlanet != "")
+                    PlanetSelection.setSelectedBody(lastSelectedPlanet);
         }
 
     }

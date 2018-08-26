@@ -34,11 +34,6 @@ namespace ResonantOrbitCalculator
         {
             get
             {
-                Log.Info("geoSMA, rot: " + rot);
-                
-                Log.Info("mass: " + mass + ", GM: " + GM);
-                Log.Info("Math.Pow(((this.GM * Math.Pow(this.rot, 2)) / 39.4784176), 1 / 3): " + Math.Pow(((this.GM * Math.Pow(this.rot, 2)) / 39.4784176), 1f / 3f));
-                Log.Info("Math.Round(Math.Pow(((this.GM * Math.Pow(this.rot, 2)) / 39.4784176), 1 / 3)): " + Math.Round(Math.Pow(((this.GM * Math.Pow(this.rot, 2)) / 39.4784176), 1 / 3)));
                 if (this.rot != 0)
                     return Math.Round(Math.Pow(((this.GM * Math.Pow(this.rot, 2)) / 39.4784176), 1f / 3f));
                 else return 0;
@@ -49,7 +44,6 @@ namespace ResonantOrbitCalculator
         {
             get
             {
-                Log.Info("geoAlt, geoSMA: " + geoSMA + ",   eqr: " + eqr);
                 return this.geoSMA - this.eqr;
             }
         }

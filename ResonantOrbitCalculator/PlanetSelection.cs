@@ -5,7 +5,18 @@ using System.Text;
 using UnityEngine;
 using System.Reflection;
 using KSP.IO;
+using System.IO;
 using ClickThroughFix;
+using Object = UnityEngine.Object;
+
+
+
+using KSP.UI.Screens.Settings.Controls;
+using TMPro;
+
+using UnityEngine.AI;
+using UnityEngine.UI;
+
 
 namespace ResonantOrbitCalculator
 {
@@ -13,14 +24,23 @@ namespace ResonantOrbitCalculator
     public class PlanetSelection : MonoBehaviour
     {
         static public CelestialBody selectedBody = Planetarium.fetch.Home;
+        static public Texture2D planetImg = null;
 
         List<CelestialBody> bodiesList = null;
         public static bool isActive = false;
         const int wnd_width = 200;
-        const int wnd_height = 500;
+        const int wnd_height = GraphWindow.wnd_height;
         Rect planetWin = new Rect(100.0f, 100.0f, wnd_width, wnd_height);
         Vector2 bodiesScrollPosition;
         GUIStyle winStyle;
+
+        static void loadBodyImage(string name)
+        {
+            if (planetImg != null)
+                Object.Destroy(planetImg);
+
+            planetImg = LoadPNG(PlanetSelector.filePath + selectedBody.name + ".png");
+        }
 
         public static void setSelectedBody(string name)
         {
@@ -29,6 +49,8 @@ namespace ResonantOrbitCalculator
                 if (body.name == name)
                 {
                     selectedBody = body;
+                    loadBodyImage(selectedBody.name);
+                    ResonantOrbitCalculator.Instance.testlastSelectedPlanet = name;
                     return;
                 }
             }
@@ -42,14 +64,13 @@ namespace ResonantOrbitCalculator
 
             foreach (CelestialBody body in GameObject.FindObjectsOfType(typeof(CelestialBody)))
             {
-                // Log.Info("body name: " + body.name);
                 if (body.orbit != null && body.orbit.referenceBody != null)
                 {
                     parent = body.orbit.referenceBody;
                 }
                 else
                     parent = null;
-                if (body.atmosphere)
+                //if (body.atmosphere)
                 {
                     switch (filter)
                     {
@@ -87,11 +108,14 @@ namespace ResonantOrbitCalculator
             for (int i = 0; i < pixels.Length; ++i)
                 pixels[i].a = 255;
 
-            tex.SetPixels32(pixels); tex.Apply();
+            tex.SetPixels32(pixels);
+            tex.Apply();
 
             winStyle.active.background = tex;
             winStyle.focused.background = tex;
             winStyle.normal.background = tex;
+
+            loadBodyImage(selectedBody.name);
         }
 
         void OnDestroy()
@@ -104,7 +128,7 @@ namespace ResonantOrbitCalculator
             planetWin.height = GraphWindow.wnd_rect.height;
             planetWin.x = GraphWindow.wnd_rect.x + GraphWindow.wnd_rect.width;
             planetWin.y = GraphWindow.wnd_rect.y;
-            planetWin = ClickThruBlocker.GUILayoutWindow(565949, planetWin, planetSelWin, "Planetary Body Selection", winStyle);
+            ClickThruBlocker.GUILayoutWindow(565949, planetWin, planetSelWin, "Planetary Body Selection", winStyle);
         }
 
         void planetSelWin(int id)
@@ -116,14 +140,18 @@ namespace ResonantOrbitCalculator
             bodiesScrollPosition = GUILayout.BeginScrollView(bodiesScrollPosition);
             foreach (CelestialBody body in bodiesList)
             {
-                if (GUILayout.Button(body.name, GUILayout.Height(30)))
+                if (GUILayout.Button(body.name, GUILayout.Height(20)))
                 {
                     selectedBody = body;
 
                     ResonantOrbitCalculator_Persistent.Instance.lastSelectedPlanet = body.name;
 
-                    if (ResonantOrbitCalculator.Instance.graphWindow.autoUpdate && ResonantOrbitCalculator.Instance.graphWindow.shown)
-                        ResonantOrbitCalculator.Instance.graphWindow.update_graphs();
+                    if (ResonantOrbitCalculator.Instance.graphWindow.shown)
+                    {
+                        loadBodyImage(selectedBody.name);
+
+                        ResonantOrbitCalculator.Instance.graphWindow.UpdateGraph();
+                    }
                 }
             }
             GUILayout.EndScrollView();
@@ -133,5 +161,33 @@ namespace ResonantOrbitCalculator
             }
             GUI.DragWindow();
         }
+        internal void DestroyThis()
+        {
+            Destroy(this);
+        }
+
+        static Texture2D LoadPNG(string filePath)
+        {
+
+            Texture2D tex = null;
+            byte[] fileData;
+
+            if (System.IO.File.Exists(filePath))
+            {
+#if true
+                fileData = System.IO.File.ReadAllBytes(filePath);
+                tex = new Texture2D(2, 2);
+                tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+#else
+                var _imagetex = new WWW(filePath);
+                tex = _imagetex.texture;
+                _imagetex.Dispose();
+#endif
+
+            }
+            return tex;
+        }
+
+
     }
 }

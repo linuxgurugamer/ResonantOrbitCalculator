@@ -14,6 +14,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OU
 */
 
 using System;
+using System.IO;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using KSP.UI.Screens;
@@ -26,170 +28,27 @@ namespace ResonantOrbitCalculator
     public partial class ResonantOrbitCalculator : MonoBehaviour
     {
         public static ResonantOrbitCalculator Instance;
-        public EditorVesselOverlays overlays;
-        public EditorMarker_CoL old_CoL_marker;
-        //public static CoLMarkerFull new_CoL_marker;
-        public static PhysicsGlobals.LiftingSurfaceCurve bodylift_curves;
-        static bool far_searched = false;
-        static bool far_found = false;
-        internal static bool showStockMarker = false;
-        //Button.ButtonClickedEvent clickEvent;
         public GraphWindow graphWindow;
 
+        public const string unSelected = "aaaabbbb";
+
         [KSPField(isPersistant = true)]
-        public string testlastSelectedPlanet = "aaaabbbb";
+        public string testlastSelectedPlanet = unSelected;
 
         void Start()
         {
             Instance = this;
             Debug.Log("[ResonantOrbitCalculator]: Starting!");
-
-            if (!far_searched)
-            {
-                foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
-                {
-                    if (a.GetName().Name.Equals("FerramAerospaceResearch"))
-                    {
-                        far_found = true;
-                        break;
-                    }
-                }
-                far_searched = true;
-            }
-            if (far_found)
-            {
-                Debug.Log("[ResonantOrbitCalculator]: FAR found, disabling itself!");
-                GameObject.Destroy(this.gameObject);
-                return;
-            }
-
+            
             graphWindow = new GraphWindow();
             // should be called once, so let's deserialize graph here too                
             graphWindow.Start();
             graphWindow.load_settings();
-            graphWindow.init_textures(true);
+            graphWindow.init_textures();
    
 
             onAppLauncherLoad();
-#if false
-         graphWindow.init_reflections();
-            overlays = EditorVesselOverlays.fetch;
-            if (overlays == null)
-            {
-                Debug.Log("[ResonantOrbitCalculator]: overlays is null!");
-                GameObject.Destroy(this.gameObject);
-                return;
-            }
-            old_CoL_marker = overlays.CoLmarker;
-            if (old_CoL_marker == null)
-            {
-                Debug.Log("[ResonantOrbitCalculator]: CoL_marker is null!");
-                GameObject.Destroy(this.gameObject);
-                return;
-            }
-            bodylift_curves = PhysicsGlobals.GetLiftingSurfaceCurve("BodyLift");
-            //   if (new_CoL_marker == null)
-            {
-                new_CoL_marker = this.gameObject.AddComponent<CoLMarkerFull>();
 
-                CoLMarkerFull.lift_curves = bodylift_curves;
-                new_CoL_marker.posMarkerObject = (GameObject)GameObject.Instantiate(old_CoL_marker.dirMarkerObject);
-                new_CoL_marker.posMarkerObject.transform.parent = new_CoL_marker.transform;
-                new_CoL_marker.posMarkerObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                new_CoL_marker.posMarkerObject.SetActive(false);
-                new_CoL_marker.posMarkerObject.layer = 2;
-                foreach (Transform child in new_CoL_marker.posMarkerObject.transform)
-                {
-                    child.gameObject.layer = 2;
-                }
-                GameEvents.onEditorRestart.Add(TurnOffCoL);
-                graphWindow = new GraphWindow();
-                // should be called once, so let's deserialize graph here too                
-                graphWindow.Start();
-                graphWindow.load_settings();
-                graphWindow.init_textures(true);
-                graphWindow.init_reflections();
-
-                clickEvent = new Button.ButtonClickedEvent();
-                clickEvent.AddListener(ToggleCoL);
-            }
-            GameEvents.onGUIApplicationLauncherReady.Add(onAppLauncherLoad);
-            GameEvents.onGUIApplicationLauncherUnreadifying.Add(onAppLauncherUnload);
-
-            GameEvents.onEditorShipModified.Add(EditorPartEvent);
-
-            onAppLauncherLoad();
-            graphWindow.shown = false;
-            new_CoL_marker.enabled = false;
-
-            old_CoL_marker.gameObject.SetActive(false);
-            overlays.toggleCoLbtn.onClick = clickEvent;
-            //overlays.toggleCoLbtn.methodToInvoke = "ToggleCoL";
-        }
-
-        void EditorPartEvent(ShipConstruct s)
-        {
-            if (graphWindow.autoUpdate && graphWindow.shown)
-                graphWindow.update_graphs();
-        }
-
-        public void SwapMarkers()
-        {
-            if (ColActive)
-            {
-                if (showStockMarker)
-                {
-                    old_CoL_marker.gameObject.SetActive(true);
-                    //new_CoL_marker.gameObject.SetActive(false);
-                    new_CoL_marker.enabled = false;
-                    new_CoL_marker.posMarkerObject.SetActive(false);
-                }
-                else
-                {
-                    old_CoL_marker.gameObject.SetActive(false);
-                    //new_CoL_marker.gameObject.SetActive(true);
-                    new_CoL_marker.enabled = true;
-                    new_CoL_marker.posMarkerObject.SetActive(true);
-                }
-            }
-        }
-        bool ColActive = false;
-
-        public void ToggleCoL()
-        {
-            if (EditorLogic.fetch.ship != null && EditorLogic.fetch.ship.parts.Count > 0)
-            {
-                ColActive = !ColActive;
-                if (ColActive)
-                {
-                    if (!showStockMarker)
-                    {
-                        old_CoL_marker.gameObject.SetActive(false);
-                        //f (!new_CoL_marker.gameObject.activeSelf)
-                      //      new_CoL_marker.gameObject.SetActive(true);
-                        new_CoL_marker.enabled = true;
-                    }
-                    else
-                    {
-                        old_CoL_marker.gameObject.SetActive(true);
-                        new_CoL_marker.enabled = false;
-                    }
-                } else
-                {
-                    new_CoL_marker.enabled = false;
-                    old_CoL_marker.gameObject.SetActive(false);
-                }
-
-            }
-            else
-            {
-                ColActive = false;
-                new_CoL_marker.enabled = false;
-                old_CoL_marker.gameObject.SetActive(false);
-            }
-            new_CoL_marker.posMarkerObject.SetActive(new_CoL_marker.enabled);
-        }
-#endif
         }
         public void OnDestroy()
         {
@@ -201,25 +60,8 @@ namespace ResonantOrbitCalculator
             if (GameEvents.onGUIApplicationLauncherReady != null)
                 GameEvents.onGUIApplicationLauncherReady.Remove(onAppLauncherLoad);
 
-                    #if false
-            if (GameEvents.onEditorRestart != null)
-                GameEvents.onEditorRestart.Remove(TurnOffCoL);
-            if (GameEvents.onEditorShipModified != null)
-                GameEvents.onEditorShipModified.Remove(EditorPartEvent);
-            if (new_CoL_marker != null)
-                Destroy(new_CoL_marker);
-#endif
             graphWindow = null;
         }
-
-#if false
-        public void TurnOffCoL()
-        {
-            new_CoL_marker.enabled = false;
-            new_CoL_marker.posMarkerObject.SetActive(false);
-        }
-#endif
-
 
 
 
@@ -240,8 +82,8 @@ namespace ResonantOrbitCalculator
                  ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.VAB,
                  MODID,
                 "ResonantOrbitCalculatorButton",
-                "ResonantOrbitCalculator/Images/icon",
-                "ResonantOrbitCalculator/Images/iconSmall",
+                "ResonantOrbitCalculator/Images/ResonantOrbit_38",
+                "ResonantOrbitCalculator/Images/ResonantOrbit_24",
                 MODNAME
             );
 
@@ -270,6 +112,38 @@ namespace ResonantOrbitCalculator
         void OnGUI()
         {
             graphWindow.OnGUI();
+            if (graphWindow.saveScreen)
+            {
+                graphWindow.saveScreen = false;
+                StartCoroutine(ScreenshotEncode());
+            }
+        }
+
+        const string fname = "ResonantOrbit";
+        IEnumerator ScreenshotEncode()
+        {
+            // wait for graphics to render
+            yield return new WaitForEndOfFrame();
+
+            Rect pixelRect = GraphWindow.wnd_rect; // copy values
+
+            pixelRect.y = Mathf.Max(Screen.height - GraphWindow.wnd_rect.y - GraphWindow.wnd_rect.height, 0f);
+
+            Texture2D captureTex = new Texture2D(Mathf.CeilToInt(pixelRect.width), Mathf.CeilToInt(pixelRect.height));
+
+            captureTex.ReadPixels(pixelRect, 0, 0, false);
+
+            byte[] bytes = captureTex.EncodeToPNG();
+            string filePath = KSPUtil.ApplicationRootPath + "Screenshots/";;
+            FileInfo file = new System.IO.FileInfo(filePath);
+
+   
+            int i = 0;
+            while (File.Exists(filePath + fname + i.ToString() + ".png"))
+                i++;
+            File.WriteAllBytes(filePath + fname + i.ToString() + ".png", bytes);
+    
+            DestroyObject(captureTex);
         }
 
     }

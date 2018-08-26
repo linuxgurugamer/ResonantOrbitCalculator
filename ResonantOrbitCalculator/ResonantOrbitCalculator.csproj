@@ -37,17 +37,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
+    <Compile Include="Libraries\BitmapDrawing.cs" />
     <Compile Include="Body.cs" />
     <Compile Include="chart.cs" />
+    <Compile Include="Libraries\TextureScale.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="OrbitCalc.cs" />
     <Compile Include="orbitdef.cs" />
     <Compile Include="Persistent.cs" />
     <Compile Include="PlanetSelection.cs" />
     <Compile Include="ResonantOrbitCalculator.cs" />
-    <Compile Include="CoLMarkerFull.cs" />
     <Compile Include="GraphWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Libraries\RuntimePreviewGenerator.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ToolbarRegistration.cs" />
   </ItemGroup>
@@ -68,7 +70,7 @@
       <HintPath>R:\KSP_1.4.3_dev\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="ClickThroughBlocker">
-      <HintPath>R:\KSP_1.4.3_dev\GameData\ClickThroughBlocker\Plugins\ClickThroughBlocker.dll</HintPath>
+      <HintPath>R:\KSP_1.4.3_dev\GameData\000_ClickThroughBlocker\Plugins\ClickThroughBlocker.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="ToolbarControl">
@@ -89,18 +91,14 @@ set textTemplatingPath="%25ProgramFiles(x86)%25\Microsoft Visual Studio\2017\Com
 %25textTemplatingPath%25 "$(ProjectDir)AssemblyVersion.tt"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>start /D D:\Users\jbb\github\ResonantOrbitCalculator /WAIT deploy.bat
-
-
+    <PostBuildEvent>
+start /D D:\Users\jbb\github\ResonantOrbitCalculator  /WAIT deploy.bat  $(TargetDir) $(TargetFileName)
 
 if $(ConfigurationName) == Release (
 
+	start /D D:\Users\jbb\github\ResonantOrbitCalculator  /WAIT buildRelease.bat $(TargetDir) $(TargetFileName)
 
-     start /D D:\Users\jbb\github\ResonantOrbitCalculator/WAIT buildRelease.bat
-
-
-)
-</PostBuildEvent>
+)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
