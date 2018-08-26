@@ -1,0 +1,5 @@
+0.0.1.1
+	fixed update when typing in number of satellites
+
+0.0.1
+	Initial release
