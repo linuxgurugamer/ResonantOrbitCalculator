@@ -1,21 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
-using System.Reflection;
-using KSP.IO;
-using System.IO;
 using ClickThroughFix;
 using Object = UnityEngine.Object;
-
-
-
-using KSP.UI.Screens.Settings.Controls;
-using TMPro;
-
-using UnityEngine.AI;
-using UnityEngine.UI;
 
 
 namespace ResonantOrbitCalculator
@@ -50,7 +38,7 @@ namespace ResonantOrbitCalculator
                 {
                     selectedBody = body;
                     loadBodyImage(selectedBody.name);
-                    ResonantOrbitCalculator.Instance.testlastSelectedPlanet = name;
+                    ResonantOrbitCalculator_Persistent.Instance.lastSelectedPlanet = name;
                     return;
                 }
             }

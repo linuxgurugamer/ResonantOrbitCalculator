@@ -52,9 +52,9 @@ namespace ResonantOrbitCalculator
         internal bool saveScreen = false;
         public void Start()
         {
-            if (ResonantOrbitCalculator.Instance.testlastSelectedPlanet == ResonantOrbitCalculator.unSelected)
-                ResonantOrbitCalculator.Instance.testlastSelectedPlanet = FlightGlobals.GetHomeBody().name;
-            PlanetSelection.setSelectedBody(ResonantOrbitCalculator.Instance.testlastSelectedPlanet);
+            if (ResonantOrbitCalculator_Persistent.Instance.lastSelectedPlanet == "")
+                ResonantOrbitCalculator_Persistent.Instance.lastSelectedPlanet = FlightGlobals.GetHomeBody().name;
+            PlanetSelection.setSelectedBody(ResonantOrbitCalculator_Persistent.Instance.lastSelectedPlanet);
             GUI.color = new Color(0.85f, 0.85f, 0.85f, 1);
 
             winStyle = new GUIStyle(HighLogic.Skin.window);
@@ -149,14 +149,14 @@ namespace ResonantOrbitCalculator
 
         }
 
-        public string sNumSats = "3";
-        public string sOrbitAltitude = "";
+        static public string sNumSats = "3";
+        static public string sOrbitAltitude = "";
         static public bool synchronousOrbit = false;
         static public bool minLOSorbit = false;
         static public bool showLOSlines = false;
         static public bool occlusionModifiers = false;
-        public string sAtmOcclusion = "0.75";
-        public string sVacOcclusion = "0.9";
+        static public string sAtmOcclusion = "0.75";
+        static public string sVacOcclusion = "0.9";
         static public double orbitAltitude;
         static public int numSats = 3;
         static public double atmOcclusion = 0.75f;

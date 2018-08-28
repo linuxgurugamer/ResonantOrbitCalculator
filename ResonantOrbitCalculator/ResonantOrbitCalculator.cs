@@ -30,11 +30,6 @@ namespace ResonantOrbitCalculator
         public static ResonantOrbitCalculator Instance;
         public GraphWindow graphWindow;
 
-        public const string unSelected = "aaaabbbb";
-
-        [KSPField(isPersistant = true)]
-        public string testlastSelectedPlanet = unSelected;
-
         void Start()
         {
             Instance = this;
