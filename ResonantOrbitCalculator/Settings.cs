@@ -12,7 +12,7 @@ namespace ResonantOrbitCalculator
     // http://forum.kerbalspaceprogram.com/index.php?/topic/147576-modders-notes-for-ksp-12/#comment-2754813
     // search for "Mod integration into Stock Settings
 
-    public class CCOLParams : GameParameters.CustomParameterNode
+    public class ROCParams : GameParameters.CustomParameterNode
     {
         public override string Title { get { return "Resonant Orbit Calculator"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
@@ -30,8 +30,22 @@ namespace ResonantOrbitCalculator
             toolTip ="Show tooltips")]
         public bool tooltips = true;
 
+        [GameParameters.CustomParameterUI("Use alternate skin")]
+        public bool useAlternateSkin = false;
+
+        [GameParameters.CustomParameterUI("Hide UI when paused")]
+        public bool hideWhenPaused = false;
+
         [GameParameters.CustomParameterUI("Use last selected planet")]
         public bool useLastPlanet = true;
+
+        [GameParameters.CustomParameterUI("Editor SOI white",
+            toolTip = "If false, the background in the editor will be a dark grey")]
+        public bool editorSOIWhite = true;
+
+        [GameParameters.CustomParameterUI("Flight SOI white",
+            toolTip = "If false, the background in flight will be dark grey")]
+        public bool flightSOIWhite = false;
 
 
 

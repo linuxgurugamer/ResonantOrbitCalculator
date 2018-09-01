@@ -45,7 +45,10 @@ namespace ResonantOrbitCalculator
         static Color carrierUrgentColor = Color.red;
 
         static Color medGrey = new Color(59f / 255f, 63f / 255f, 68f / 255f);
-        static Color soiColor = Color.white; // new Color(236f / 255f, 236f / 255f, 236f / 255f);
+        static Color soiColor;
+        static Color soiWhiteColor = Color.white; // new Color(236f / 255f, 236f / 255f, 236f / 255f);
+        static Color soiGreyColor = new Color(64f / 255f, 64f / 255f, 64f / 255f);
+
 
         static Color geosyncColor = new Color(191f / 255f, 66f / 255f, 244f / 255f);  // purple
         // MA = Major Axis
@@ -79,7 +82,21 @@ namespace ResonantOrbitCalculator
             var SOIr = b.SOI * coordkm;
             if (SOIr > 10000) SOIr = 10000;
             bodySOI = SOIr;
+            if (HighLogic.LoadedSceneIsEditor)
+            {
+                if (HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().editorSOIWhite)
+                    soiColor = soiWhiteColor;
+                else
+                    soiColor = soiGreyColor;
+            }
+            else
+            {
+                if (HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().flightSOIWhite)
+                    soiColor = soiWhiteColor;
+                else
+                    soiColor = soiGreyColor;
 
+            }
             GraphWindow.graph_texture.DrawFilledCircle(GraphWindow.HALF, GraphWindow.HALF, (SOIr <= GraphWindow.MAX_DIST)? (int)SOIr: GraphWindow.MAX_DIST, soiColor);
             GraphWindow.graph_texture.DrawCircle(GraphWindow.HALF, GraphWindow.HALF, (int)SOIr, medGrey, 10, 5);
 
@@ -89,7 +106,7 @@ namespace ResonantOrbitCalculator
             if (atmosphere_r > 0)
                 GraphWindow.graph_texture.DrawFilledCircle(GraphWindow.HALF, GraphWindow.HALF, (int)(atmosphere_r), liteGrey);
 
-            if (PlanetSelection.planetImg == null || !HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().showPlanetImage)
+            if (PlanetSelection.planetImg == null || !HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().showPlanetImage)
             {
                  GraphWindow.graph_texture.DrawFilledCircle(GraphWindow.HALF, GraphWindow.HALF, (int)body_r, planetColor);
             } else

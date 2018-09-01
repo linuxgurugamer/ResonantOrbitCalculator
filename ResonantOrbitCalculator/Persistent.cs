@@ -38,7 +38,7 @@ namespace ResonantOrbitCalculator
         void Start()
         {
             Debug.Log("CorrectCoL_Persistent.Start");
-            if (HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().useLastPlanet)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().useLastPlanet)
                 if (lastSelectedPlanet != "")
                     PlanetSelection.setSelectedBody(lastSelectedPlanet);
         }

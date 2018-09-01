@@ -29,6 +29,7 @@ namespace ResonantOrbitCalculator
     {
         public static ResonantOrbitCalculator Instance;
         public GraphWindow graphWindow;
+        internal MechjebWrapper mucore = new MechjebWrapper();
 
         void Start()
         {
@@ -40,8 +41,13 @@ namespace ResonantOrbitCalculator
             graphWindow.Start();
             graphWindow.load_settings();
             graphWindow.init_textures();
-   
 
+            KACWrapper.InitKACWrapper();
+
+            GameEvents.onHideUI.Add(this.HideUI);
+            GameEvents.onShowUI.Add(this.ShowUI);
+            GameEvents.onGamePause.Add(this.HideUIWhenPaused);
+            GameEvents.onGameUnpause.Add(this.ShowUIwhenUnpaused);
             onAppLauncherLoad();
 
         }
@@ -55,14 +61,40 @@ namespace ResonantOrbitCalculator
             if (GameEvents.onGUIApplicationLauncherReady != null)
                 GameEvents.onGUIApplicationLauncherReady.Remove(onAppLauncherLoad);
 
+            GameEvents.onHideUI.Remove(this.HideUI);
+            GameEvents.onShowUI.Remove(this.ShowUI);
+            GameEvents.onGamePause.Remove(this.HideUIWhenPaused);
+            GameEvents.onGameUnpause.Remove(this.ShowUIwhenUnpaused);
+
             graphWindow = null;
         }
+        bool hideUI = false;
+        bool hideUIpaused = false;
 
+        public void HideUI()
+        {
+            hideUI = true;
+        }
 
+        void ShowUI()
+        {
+            hideUI = false;
+        }
 
+        public void HideUIWhenPaused()
+        {
+            if (HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().hideWhenPaused)
+                hideUIpaused = true;
+        }
 
+  
+        void ShowUIwhenUnpaused()
+        {
+            hideUIpaused = false;
+        }
 
-       // static ApplicationLauncherButton launcher_btn;
+        
+        // static ApplicationLauncherButton launcher_btn;
         static ToolbarControl toolbarControl = null;
         internal const string MODID = "ResonantOrbitCalculator_NS";
         internal const string MODNAME = "Resonant Orbit Calculator";
@@ -74,7 +106,10 @@ namespace ResonantOrbitCalculator
                 return;
             toolbarControl = gameObject.AddComponent<ToolbarControl>();
             toolbarControl.AddToAllToolbars(OnALTrue, OnALFalse,
-                 ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.VAB,
+                 ApplicationLauncher.AppScenes.FLIGHT |
+                 ApplicationLauncher.AppScenes.SPH | 
+                 ApplicationLauncher.AppScenes.VAB | 
+                 ApplicationLauncher.AppScenes.MAPVIEW,
                  MODID,
                 "ResonantOrbitCalculatorButton",
                 "ResonantOrbitCalculator/PluginData/Images/ResonantOrbit_38",
@@ -106,11 +141,14 @@ namespace ResonantOrbitCalculator
 
         void OnGUI()
         {
-            graphWindow.OnGUI();
-            if (graphWindow.saveScreen)
+            if (!hideUI && !hideUIpaused)
             {
-                graphWindow.saveScreen = false;
-                StartCoroutine(ScreenshotEncode());
+                graphWindow.OnGUI();
+                if (graphWindow.saveScreen)
+                {
+                    graphWindow.saveScreen = false;
+                    StartCoroutine(ScreenshotEncode());
+                }
             }
         }
 

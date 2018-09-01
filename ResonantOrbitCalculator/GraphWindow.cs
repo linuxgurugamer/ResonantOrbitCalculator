@@ -37,6 +37,7 @@ namespace ResonantOrbitCalculator
         static bool init_gui = false;
 
         GUIStyle winStyle;
+        GUIStyle buttonStyle;
         static GUIStyle normalLabel;
         static GUIStyle warningLabel;
         static GUIStyle headerLabel;
@@ -45,6 +46,7 @@ namespace ResonantOrbitCalculator
         static GUIStyle toggleMinLOSNormal;
         static GUIStyle labelResonantOrbit;
 
+        static GUIStyle buttonRed;
 
         //public bool autoUpdate;
         public PlanetSelection planetSelection = null;
@@ -98,7 +100,7 @@ namespace ResonantOrbitCalculator
 
         void TooltipWindow(int id)
         {
-            if (HighLogic.CurrentGame.Parameters.CustomParams<CCOLParams>().tooltips)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().tooltips)
                 GUI.Label(new Rect(2, 0, tooltipRect.width - 2, tooltipRect.height), tooltip, HighLogic.Skin.label);
         }
 
@@ -125,6 +127,7 @@ namespace ResonantOrbitCalculator
                 warningLabel.normal.background.SetPixels(pix);
                 warningLabel.normal.background.Apply();
 
+           
                 toggleMinLOSWarning = new GUIStyle(GUI.skin.toggle);
                 toggleMinLOSWarning.normal.textColor = Color.red;
 
@@ -134,10 +137,16 @@ namespace ResonantOrbitCalculator
                 labelResonantOrbit = new GUIStyle(GUI.skin.label);
                 labelResonantOrbit.normal.textColor = Color.green;
                 labelResonantOrbit.fontStyle = FontStyle.Bold;
+                buttonRed = new GUIStyle(GUI.skin.button);
+                buttonRed.normal.textColor = Color.red;
+                buttonRed.hover.textColor = Color.red;
             }
+
             EditorLogic editorlogic = EditorLogic.fetch;
             if (shown)
             {
+                if (!HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().useAlternateSkin)
+                    GUI.skin = HighLogic.Skin;
                 if (drawTooltip /* && HighLogic.CurrentGame.Parameters.CustomParams<JanitorsClosetSettings>().buttonTooltip*/ && tooltip != null && tooltip.Trim().Length > 0)
                 {
                     SetupTooltip();
@@ -154,6 +163,8 @@ namespace ResonantOrbitCalculator
         static public bool synchronousOrbit = false;
         static public bool minLOSorbit = false;
         static public bool showLOSlines = false;
+        static public bool currentAp = false;
+        static public bool currentPe = false;
         static public bool occlusionModifiers = false;
         static public string sAtmOcclusion = "0.75";
         static public string sVacOcclusion = "0.9";
@@ -172,6 +183,9 @@ namespace ResonantOrbitCalculator
         double dTmp;
         int iTmp;
         bool firstTime = true;
+        enum SelectedOrbit { Ap, Pe, MinLOS, Synchronous, None};
+        SelectedOrbit selectedOrbit = SelectedOrbit.None;
+
 
         void _drawGUI(int id)
         {
@@ -214,7 +228,6 @@ namespace ResonantOrbitCalculator
                         planetSelection.DestroyThis();
                 }
             }
-            //autoUpdate = GUILayout.Toggle(autoUpdate, new GUIContent("Auto-update", "Update the graph after any change"));
 
             GUILayout.BeginHorizontal();
 
@@ -258,7 +271,10 @@ namespace ResonantOrbitCalculator
             {
                 bValidOrbitAltitude = double.TryParse(newsOrbitAltitude, out dTmp);
                 if (bValidOrbitAltitude)
+                {
+                    selectedOrbit = SelectedOrbit.None;
                     orbitAltitude = dTmp;
+                }
                 sOrbitAltitude = orbitAltitude.ToString("F0");
                 draw = true;
             }
@@ -273,6 +289,8 @@ namespace ResonantOrbitCalculator
             GUILayout.BeginHorizontal();
             if (GUILayout.Toggle(synchronousOrbit, new GUIContent("Synchronous orbit (" + OrbitCalc.synchrorbit + ")", "Set the altitude to have the satellites be in a geosynchronous orbit")))
             {
+                selectedOrbit = SelectedOrbit.Synchronous;
+
                 orbitAltitude = OrbitCalc.body.geoAlt;
                 sOrbitAltitude = orbitAltitude.ToString();
                 draw = true;
@@ -287,13 +305,43 @@ namespace ResonantOrbitCalculator
             if (GUILayout.Toggle(minLOSorbit, new GUIContent("Minimum LOS orbit (" + OrbitCalc.losorbit + ")", "Set the altitude to the minimum altitude possible to maintain a Line of Sight"),
                 OrbitCalc.losOrbitWarning ? toggleMinLOSWarning : toggleMinLOSNormal))
             {
-
+                selectedOrbit = SelectedOrbit.MinLOS;
                 orbitAltitude = OrbitCalc.minLOS;
                 sOrbitAltitude = orbitAltitude.ToString();
                 draw = true;
             }
             GUILayout.EndHorizontal();
             GUI.enabled = true;
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+                GUILayout.Space(10);
+                GUILayout.BeginHorizontal();
+                bool warning = false;
+                warning = (FlightGlobals.activeTarget.orbit.ApA < FlightGlobals.ActiveVessel.mainBody.atmosphereDepth);
+
+                if (GUILayout.Toggle(currentAp, new GUIContent("Current Ap (" + FlightGlobals.activeTarget.orbit.ApA.ToString("N0") + ")", "Set the altitude to the current vessel's Ap"),
+                    warning ? toggleMinLOSWarning : GUI.skin.toggle))
+                {
+                    selectedOrbit = SelectedOrbit.Ap;
+                    orbitAltitude = Math.Round(FlightGlobals.activeTarget.orbit.ApA);
+                    sOrbitAltitude = orbitAltitude.ToString();
+                    draw = true;
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(10);
+                GUILayout.BeginHorizontal();
+                warning = (FlightGlobals.activeTarget.orbit.PeA < FlightGlobals.ActiveVessel.mainBody.atmosphereDepth);
+                if (GUILayout.Toggle(currentPe, new GUIContent("Current Pe (" + FlightGlobals.activeTarget.orbit.PeA.ToString("N0") + ")", "Set the altitude to the current vessel's Pe"),
+                    OrbitCalc.losOrbitWarning ? toggleMinLOSWarning : GUI.skin.toggle))
+                {
+                    selectedOrbit = SelectedOrbit.Pe;
+                    orbitAltitude = Math.Round(FlightGlobals.activeTarget.orbit.PeA);
+                    sOrbitAltitude = orbitAltitude.ToString();
+                    draw = true;
+                }
+                GUILayout.EndHorizontal();
+            }
+
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
 
@@ -420,8 +468,101 @@ namespace ResonantOrbitCalculator
             GUILayout.Label(OrbitCalc.burnDV);
             GUILayout.EndHorizontal();
 
+            if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel.patchedConicsUnlocked())
+            {
+                GUILayout.FlexibleSpace();
+                if (selectedOrbit == SelectedOrbit.Ap)
+                {
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button(new GUIContent("Create Maneuver Node at Ap", "Creates a maneuver node to put the current vessel into the resonant orbit")))
+                    {
+                        Vector3d circularizeDv = VesselOrbitalCalc.CircularizeAtAP(FlightGlobals.ActiveVessel);
+                        // If a flip, then  subtract
+                        double UT = Planetarium.GetUniversalTime();
+                        UT += FlightGlobals.ActiveVessel.orbit.timeToAp;
+                        var o = FlightGlobals.ActiveVessel.orbit;
+                        if (flipOrbit)
+                            circularizeDv -= OrbitCalc.dBurnDV * o.Horizontal(UT);
+                        else
+                            circularizeDv += OrbitCalc.dBurnDV * o.Horizontal(UT);
+                        FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Clear();
+                        VesselOrbitalCalc.PlaceManeuverNode(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.orbit, circularizeDv, UT);
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                if (selectedOrbit == SelectedOrbit.Pe)
+                {
+                    if (OrbitCalc.carrierPeWarning)
+                        buttonStyle = buttonRed;
+                    else
+                        buttonStyle = GUI.skin.button;
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button(new GUIContent("Create Maneuver Node at Pe", "Creates a maneuver node to put the current vessel into the resonant orbit"), buttonStyle))
+                    {
+                        double UT = Planetarium.GetUniversalTime();
+                        UT += FlightGlobals.ActiveVessel.orbit.timeToPe;
+                        var o = FlightGlobals.ActiveVessel.orbit;
+                        Vector3d circularizeDv = VesselOrbitalCalc.CircularizeAtPE(FlightGlobals.ActiveVessel);
+                        // If a flip, then  subtract 
+                        if (flipOrbit)
+                            circularizeDv -= OrbitCalc.dBurnDV * o.Horizontal(UT);
+                        else
+                            circularizeDv += OrbitCalc.dBurnDV * o.Horizontal(UT);
+                        FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Clear();
+                        VesselOrbitalCalc.PlaceManeuverNode(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.orbit, circularizeDv, UT);
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                if (FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count() > 0)
+                {
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Button("Clear all nodes"))
+                    {
+                        FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Clear();
+                    }
+                    GUILayout.EndHorizontal();
 
+                    if (selectedOrbit == SelectedOrbit.Ap || selectedOrbit == SelectedOrbit.Pe)
+                    {
+                        if (KACWrapper.APIReady)
+                        {
+                            GUILayout.BeginHorizontal();
+                            if (GUILayout.Button("Add alarms to KAC"))
+                            {
+                                double timeToOrbit = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].UT;
+                                double period = OrbitCalc.satelliteorbit.T;
+                                String aID;
+                                if (!ResonantOrbitCalculator.Instance.mucore.Available)
+                                {
+                                    aID = KACWrapper.KAC.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.Maneuver, "Orbital Maneuver", timeToOrbit - 60);
+                                    KACWrapper.KAC.Alarms.First(z => z.ID == aID).Notes = "Put carrier craft into resonant orbit";
+                                }
+                                timeToOrbit += period;
+                                for (int i = 0; i < numSats; i++)
+                                {
+                                    aID = KACWrapper.KAC.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.Raw, "Detachment # " + (i + 1).ToString(), timeToOrbit - 60);
+
+                                    KACWrapper.KAC.Alarms.First(z => z.ID == aID).Notes = "Detach satellite # " + (i + 1) + " and circularize it's orbit";
+                                    timeToOrbit += period;
+                                }
+                            }
+                            GUILayout.EndHorizontal();
+                        }
+
+                        if (ResonantOrbitCalculator.Instance.mucore.Available )
+                        {
+                            GUILayout.BeginHorizontal();
+                            if (GUILayout.Button("Execute maneuver"))
+                            {
+                                ResonantOrbitCalculator.Instance.mucore.ExecuteNode();
+                            }
+                            GUILayout.EndHorizontal();
+                        }
+                    }
+                }                
+            }
             GUILayout.FlexibleSpace();
+
             GUILayout.BeginHorizontal();
             if (GUILayout.Button(new GUIContent("Save Window", "Saves an image of the window to the Screenshots directory") ))
             {

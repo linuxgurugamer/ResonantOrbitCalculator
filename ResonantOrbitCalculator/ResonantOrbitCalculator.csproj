@@ -40,8 +40,11 @@
     <Compile Include="Libraries\BitmapDrawing.cs" />
     <Compile Include="Body.cs" />
     <Compile Include="chart.cs" />
+    <Compile Include="Libraries\KACWrapper.cs" />
     <Compile Include="Libraries\TextureScale.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Libraries\MechjebWrapper.cs" />
+    <Compile Include="Libraries\VesselOrbitalCalc.cs" />
     <Compile Include="OrbitCalc.cs" />
     <Compile Include="orbitdef.cs" />
     <Compile Include="Persistent.cs" />

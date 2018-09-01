@@ -69,6 +69,7 @@ namespace ResonantOrbitCalculator
         public static bool carrierPEUrgent = false;
         public static string carrierT = "";
         public static string burnDV = "";
+        public static double dBurnDV = 0f;
         public static double minLOS;
         public static string[] header = new string[2];
         public static bodydef body;
@@ -141,7 +142,8 @@ namespace ResonantOrbitCalculator
 
                 carrierT = carrierorbit.oph;
 
-                burnDV = burnCalc(satelliteorbit, carrierorbit, body).ToString("N2") + " m/s";
+                dBurnDV = burnCalc(satelliteorbit, carrierorbit, body);
+                burnDV = dBurnDV.ToString("N2") + " m/s";
             }
 
 

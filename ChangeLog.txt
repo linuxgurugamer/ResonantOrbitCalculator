@@ -1,3 +1,16 @@
+0.0.2
+	Added configurable SOI color for editor and flight (two colors, white and dark grey)
+	Added alternate skin
+	Added buttons to get current vessel's Pe or Ap while in flight scene
+	Added button to create maneuver node.  All pre-existing maneuver nodes will be removed
+	Added Mechjeb integration
+		Added button to call Mechjeb to execute maneuver node, button will be red if Pe is below the atmosphere limit
+	Added button to clear all maneuver nodes
+	Added Kerbal Alarm Clock integration
+		Added button to add alarms for the orbital maneuver (if Mechjeb not installed) and for each subsequent satellite seperation 
+	Added hiding of window when UI is hidden (F2)
+	Added optional hiding of window when game is paused
+
 0.0.1.2
 	Fixed some values being reset between scenes
 
