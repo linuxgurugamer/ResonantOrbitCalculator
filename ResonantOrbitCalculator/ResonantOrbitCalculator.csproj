@@ -89,17 +89,28 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
+
 set textTemplatingPath="%25ProgramFiles(x86)%25\Microsoft Visual Studio\2017\Community\Common7\IDE \texttransform.exe"
+
+
+
+echo %25textTemplatingPath%25 "$(ProjectDir)AssemblyVersion.tt"
 
 %25textTemplatingPath%25 "$(ProjectDir)AssemblyVersion.tt"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
+
 start /D D:\Users\jbb\github\ResonantOrbitCalculator  /WAIT deploy.bat  $(TargetDir) $(TargetFileName)
+
 
 if $(ConfigurationName) == Release (
 
+
+
 	start /D D:\Users\jbb\github\ResonantOrbitCalculator  /WAIT buildRelease.bat $(TargetDir) $(TargetFileName)
+
+
 
 )</PostBuildEvent>
   </PropertyGroup>
