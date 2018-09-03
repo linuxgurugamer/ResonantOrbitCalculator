@@ -518,7 +518,10 @@ namespace ResonantOrbitCalculator
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button("Clear all nodes"))
                     {
-                        FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Clear();
+                        for (int i = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count - 1; i >= 0 ; i--)
+                        {
+                            FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[i].RemoveSelf();
+                        }
                     }
                     GUILayout.EndHorizontal();
 
@@ -536,6 +539,7 @@ namespace ResonantOrbitCalculator
                                 {
                                     aID = KACWrapper.KAC.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.Maneuver, "Orbital Maneuver", timeToOrbit - 60);
                                     KACWrapper.KAC.Alarms.First(z => z.ID == aID).Notes = "Put carrier craft into resonant orbit";
+                                    KACWrapper.KAC.Alarms.First(z => z.ID == aID).AlarmMargin = 60;
                                 }
                                 timeToOrbit += period;
                                 for (int i = 0; i < numSats; i++)
@@ -543,6 +547,7 @@ namespace ResonantOrbitCalculator
                                     aID = KACWrapper.KAC.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.Raw, "Detachment # " + (i + 1).ToString(), timeToOrbit - 60);
 
                                     KACWrapper.KAC.Alarms.First(z => z.ID == aID).Notes = "Detach satellite # " + (i + 1) + " and circularize it's orbit";
+                                    KACWrapper.KAC.Alarms.First(z => z.ID == aID).AlarmMargin = 60;
                                     timeToOrbit += period;
                                 }
                             }
