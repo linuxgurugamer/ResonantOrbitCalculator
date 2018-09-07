@@ -62,6 +62,10 @@ namespace ResonantOrbitCalculator
         public static bool losOrbitWarning = false;
         public static bool constellationWarning = false;
         public static string period = "";
+        public static string periodHour = "";
+        public static string periodMin = "";
+        public static string periodSec = "";
+        public static bool periodEntry = false;
         public static string carrierAp = "";
         public static bool carrierApWarning = false;
         public static string carrierPe = "";
@@ -129,6 +133,12 @@ namespace ResonantOrbitCalculator
                 }
 
                 period = satelliteorbit.oph;
+                if (!periodEntry)
+                {
+                    periodHour = satelliteorbit.op_p(orbitdef.timePos.hours).ToString();
+                    periodMin = satelliteorbit.op_p(orbitdef.timePos.min).ToString();
+                    periodSec = satelliteorbit.op_p(orbitdef.timePos.sec).ToString();
+                }
                 /* if (carrierorbit.Ap > 0) */
                 carrierAp = carrierorbit.Ap.ToString("N1") + " m";
                 carrierApWarning = (carrierorbit.Ap < body.atm || carrierorbit.Ap < 0);

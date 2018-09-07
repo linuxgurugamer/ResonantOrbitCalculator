@@ -10,12 +10,17 @@ namespace ResonantOrbitCalculator
     // ma = minor axis
     // sma = semi-minor axis
     // geoSMA = the semi-major axis of geosynchronous orbit. 
+    // G = Newtons Gravitational Constant
+    // a = orbital altitude
 
     public class orbitdef
     {
         public double Ap;
         public double Pe;
         bodydef body;
+
+        const double G = 6.67384e-11;
+        const double oneThird = 1f / 3f;
 
         public orbitdef(double Ap, double Pe, bodydef body)
         {
@@ -40,6 +45,12 @@ namespace ResonantOrbitCalculator
         public double F { get { return Math.Sqrt(Math.Pow(this.SMA, 2) - Math.Pow(this.sma, 2)); } }
         public double T { get { return 2 * Math.PI * Math.Sqrt(Math.Pow(this.SMA, 3) / this.GM); } }
         public double op { get { return this.T / 3600; } }
+        public double a(double T)
+        {
+                double mu = G * body.body.Mass;
+                double sma = Math.Pow(Math.Pow(T / (2 * Math.PI), 2) * mu , oneThird);
+                return sma - body.body.Radius;
+        }
         public string oph
         {
             get
@@ -50,6 +61,18 @@ namespace ResonantOrbitCalculator
                 string time = hours + "h:" + min + "m:" + sec + "s";
                 return time;
             }
+        }
+        public enum timePos { hours, min, sec};
+        public double op_p(timePos tp)
+        {
+            double hours = Math.Floor(this.op);
+            if (tp == timePos.hours)
+                return hours;
+            double min = Math.Floor((this.op - hours) * 60);
+            if (tp == timePos.min)
+                return min;
+            double sec = Math.Round(10 * (this.op - hours - min / 60) * 3600) / 10;
+            return sec;
         }
  
  //       public double newMAfromT(double newT) { return 2 * OrbitCalc.Cbrt((this.GM * Math.Pow(newT, 2)) / 39.4784176); }

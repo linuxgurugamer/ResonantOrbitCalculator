@@ -46,6 +46,9 @@ namespace ResonantOrbitCalculator
         static GUIStyle toggleMinLOSNormal;
         static GUIStyle labelResonantOrbit;
 
+        static GUIStyle textStyle ;
+        static GUIStyle textErrorStyle ;
+
         static GUIStyle buttonRed;
 
         //public bool autoUpdate;
@@ -72,7 +75,7 @@ namespace ResonantOrbitCalculator
 
             winStyle.active.background = tex;
             winStyle.focused.background = tex;
-            winStyle.normal.background = tex;            
+            winStyle.normal.background = tex;
         }
 
 
@@ -127,7 +130,7 @@ namespace ResonantOrbitCalculator
                 warningLabel.normal.background.SetPixels(pix);
                 warningLabel.normal.background.Apply();
 
-           
+
                 toggleMinLOSWarning = new GUIStyle(GUI.skin.toggle);
                 toggleMinLOSWarning.normal.textColor = Color.red;
 
@@ -140,6 +143,15 @@ namespace ResonantOrbitCalculator
                 buttonRed = new GUIStyle(GUI.skin.button);
                 buttonRed.normal.textColor = Color.red;
                 buttonRed.hover.textColor = Color.red;
+
+                 textStyle = new GUIStyle(GUI.skin.textField);
+                 textErrorStyle = new GUIStyle(GUI.skin.textField);
+                textErrorStyle.normal.textColor = Color.red;
+                textErrorStyle.hover.textColor = Color.red;
+                textErrorStyle.focused.textColor = Color.red;
+
+
+
             }
 
             EditorLogic editorlogic = EditorLogic.fetch;
@@ -178,12 +190,15 @@ namespace ResonantOrbitCalculator
         static public bool bValidAtmOcclusion = true;
         static public bool bValidVacOcclusion = true;
 
+        double dh, dm, ds;
+        bool bh = true, bm = true, bs = true;
+
         static public bool flipOrbit = false;
 
         double dTmp;
         int iTmp;
         bool firstTime = true;
-        enum SelectedOrbit { Ap, Pe, MinLOS, Synchronous, None};
+        enum SelectedOrbit { Ap, Pe, MinLOS, Synchronous, None };
         SelectedOrbit selectedOrbit = SelectedOrbit.None;
 
 
@@ -234,7 +249,7 @@ namespace ResonantOrbitCalculator
             GUILayout.Label(new GUIContent("Number of satellites:", "Total number of satellites to arrange"));
 
             var newsNumSats = GUILayout.TextField(sNumSats);
- 
+
             int butW = 19;
             if (GUILayout.Button("^", GUILayout.Width(butW)))
             {
@@ -265,7 +280,9 @@ namespace ResonantOrbitCalculator
             }
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
+
             GUILayout.Label(new GUIContent("Altitude:", "Orbital altitude"));
+            GUI.SetNextControlName("altitude");
             string newsOrbitAltitude = GUILayout.TextField(sOrbitAltitude);
             if (newsOrbitAltitude != sOrbitAltitude)
             {
@@ -282,8 +299,43 @@ namespace ResonantOrbitCalculator
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Orbital Period: ");
-            GUILayout.Label(OrbitCalc.period);
+            GUILayout.FlexibleSpace();
+
+            GUI.SetNextControlName("periodHour");
+            string h = GUILayout.TextField(OrbitCalc.periodHour, bh ? textStyle : textErrorStyle, GUILayout.MinWidth(25));
+            GUILayout.Label("h ");
+            GUI.SetNextControlName("periodMin");
+            string m = GUILayout.TextField(OrbitCalc.periodMin, bm ? textStyle : textErrorStyle, GUILayout.MinWidth(25));
+            GUILayout.Label("m ");
+            GUI.SetNextControlName("periodSec");
+            string s = GUILayout.TextField(OrbitCalc.periodSec, bs ? textStyle : textErrorStyle, GUILayout.MinWidth(25));
+            GUILayout.Label("s");
+            OrbitCalc.periodEntry = GUI.GetNameOfFocusedControl() == "periodHour" ||
+                GUI.GetNameOfFocusedControl() == "periodMin" ||
+                GUI.GetNameOfFocusedControl() == "periodSec";
+            
+
+                bh = Double.TryParse(h, out dh);
+                bm = Double.TryParse(m, out dm);
+                bs = Double.TryParse(s, out ds);
+            if (h != OrbitCalc.periodHour || m != OrbitCalc.periodMin || s != OrbitCalc.periodSec)
+            {
+                if (bh && bm && bs)
+                {
+                    double T = dh * 3600 + dm * 60 + ds;
+
+                    orbitAltitude = OrbitCalc.satelliteorbit.a(T);
+                    sOrbitAltitude = orbitAltitude.ToString("F0");
+                    draw = true;
+                }
+                OrbitCalc.periodHour = h;
+                OrbitCalc.periodMin = m;
+                OrbitCalc.periodSec = s;
+            }
+
             GUILayout.EndHorizontal();
+
+
             if (OrbitCalc.synchrorbit == "" || OrbitCalc.synchrorbit == "n/a")
                 GUI.enabled = false;
             GUILayout.BeginHorizontal();
@@ -293,6 +345,7 @@ namespace ResonantOrbitCalculator
 
                 orbitAltitude = OrbitCalc.body.geoAlt;
                 sOrbitAltitude = orbitAltitude.ToString();
+                OrbitCalc.periodEntry = false;
                 draw = true;
             }
             GUILayout.EndHorizontal();
@@ -308,6 +361,7 @@ namespace ResonantOrbitCalculator
                 selectedOrbit = SelectedOrbit.MinLOS;
                 orbitAltitude = OrbitCalc.minLOS;
                 sOrbitAltitude = orbitAltitude.ToString();
+                OrbitCalc.periodEntry = false;
                 draw = true;
             }
             GUILayout.EndHorizontal();
@@ -325,20 +379,25 @@ namespace ResonantOrbitCalculator
                     selectedOrbit = SelectedOrbit.Ap;
                     orbitAltitude = Math.Round(FlightGlobals.activeTarget.orbit.ApA);
                     sOrbitAltitude = orbitAltitude.ToString();
+                    OrbitCalc.periodEntry = false;
                     draw = true;
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.Space(10);
                 GUILayout.BeginHorizontal();
                 warning = (FlightGlobals.activeTarget.orbit.PeA < FlightGlobals.ActiveVessel.mainBody.atmosphereDepth);
+                if (FlightGlobals.activeTarget.orbit.PeA < 1)
+                    GUI.enabled = false;
                 if (GUILayout.Toggle(currentPe, new GUIContent("Current Pe (" + FlightGlobals.activeTarget.orbit.PeA.ToString("N0") + ")", "Set the altitude to the current vessel's Pe"),
                     OrbitCalc.losOrbitWarning ? toggleMinLOSWarning : GUI.skin.toggle))
                 {
                     selectedOrbit = SelectedOrbit.Pe;
                     orbitAltitude = Math.Round(FlightGlobals.activeTarget.orbit.PeA);
                     sOrbitAltitude = orbitAltitude.ToString();
+                    OrbitCalc.periodEntry = false;
                     draw = true;
                 }
+                GUI.enabled = true;
                 GUILayout.EndHorizontal();
             }
 
@@ -518,7 +577,7 @@ namespace ResonantOrbitCalculator
                     GUILayout.BeginHorizontal();
                     if (GUILayout.Button("Clear all nodes"))
                     {
-                        for (int i = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count - 1; i >= 0 ; i--)
+                        for (int i = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count - 1; i >= 0; i--)
                         {
                             FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[i].RemoveSelf();
                         }
@@ -554,7 +613,7 @@ namespace ResonantOrbitCalculator
                             GUILayout.EndHorizontal();
                         }
 
-                        if (ResonantOrbitCalculator.Instance.mucore.Available )
+                        if (ResonantOrbitCalculator.Instance.mucore.Available)
                         {
                             GUILayout.BeginHorizontal();
                             if (GUILayout.Button("Execute maneuver"))
@@ -564,12 +623,12 @@ namespace ResonantOrbitCalculator
                             GUILayout.EndHorizontal();
                         }
                     }
-                }                
+                }
             }
             GUILayout.FlexibleSpace();
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button(new GUIContent("Save Window", "Saves an image of the window to the Screenshots directory") ))
+            if (GUILayout.Button(new GUIContent("Save Window", "Saves an image of the window to the Screenshots directory")))
             {
                 saveScreen = true;
             }

@@ -1,4 +1,7 @@
-﻿0.0.2.1
+﻿0.0.3
+	Added ability to enter orbit period instead of altitude
+
+0.0.2.1
 	Thanks to @4x4cheesecake for these two fixes:
 		Maneuver nodes are deleted properly,
 		Added an alarm margin to show correct timings in the alarm details
