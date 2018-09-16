@@ -21,6 +21,7 @@ using UnityEngine.UI;
 using KSP.UI.Screens;
 using ToolbarControl_NS;
 
+
 namespace ResonantOrbitCalculator
 {
 
@@ -30,6 +31,11 @@ namespace ResonantOrbitCalculator
         public static ResonantOrbitCalculator Instance;
         public GraphWindow graphWindow;
         internal MechjebWrapper mucore = new MechjebWrapper();
+
+        static Texture2D upArrow;
+        static Texture2D downArrow;
+        internal GUIContent upContent;
+        internal GUIContent downContent;
 
         void Start()
         {
@@ -50,7 +56,33 @@ namespace ResonantOrbitCalculator
             GameEvents.onGameUnpause.Add(this.ShowUIwhenUnpaused);
             onAppLauncherLoad();
 
+            if (upArrow == null)
+            {
+#if false
+                if (ToolbarControl.LoadImageFromFile(ref upArrow, "GameData/ResonantOrbitCalculator/PluginData/Images/up"))
+                    upContent = new GUIContent("", upArrow, "");
+                else
+                    upContent = new GUIContent("^", null, "");
+#else
+                upArrow = GameDatabase.Instance.GetTexture("ResonantOrbitCalculator/Images/up", false);
+                upContent = new GUIContent("", upArrow, "");
+#endif
+            }
+            if (downArrow == null)
+            {
+#if false
+                if (ToolbarControl.LoadImageFromFile(ref downArrow, "GameData/ResonantOrbitCalculator/PluginData/Images/down"))
+                    downContent = new GUIContent("", downArrow, "");
+                else
+                    downContent = new GUIContent("v", null, "");
+#else
+                downArrow = GameDatabase.Instance.GetTexture("ResonantOrbitCalculator/Images/down", false);
+                downContent = new GUIContent("", downArrow, "");
+#endif
+            }
+
         }
+
         public void OnDestroy()
         {
             if (graphWindow != null)

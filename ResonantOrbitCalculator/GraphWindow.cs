@@ -200,10 +200,18 @@ namespace ResonantOrbitCalculator
         bool firstTime = true;
         enum SelectedOrbit { Ap, Pe, MinLOS, Synchronous, None };
         SelectedOrbit selectedOrbit = SelectedOrbit.None;
+        //const String UpArrow = "⯅";
+        //const String DownArrow = "⯆";
+        //const String UpArrow = "^";
+        //const String DownArrow = "v";
+        GUIContent UpArrow, DownArrow;
 
 
         void _drawGUI(int id)
         {
+            UpArrow = ResonantOrbitCalculator.Instance.upContent;
+            DownArrow = ResonantOrbitCalculator.Instance.downContent;
+
             GUILayout.BeginHorizontal(GUILayout.Width(wnd_width));
 
             GUILayout.EndHorizontal();
@@ -251,14 +259,14 @@ namespace ResonantOrbitCalculator
             var newsNumSats = GUILayout.TextField(sNumSats);
 
             int butW = 19;
-            if (GUILayout.Button("^", GUILayout.Width(butW)))
+            if (GUILayout.Button(UpArrow, GUILayout.Width(butW)))
             {
                 numSats++;
                 sNumSats = numSats.ToString();
                 newsNumSats = sNumSats;
                 draw = true;
             }
-            if (GUILayout.Button("v", GUILayout.Width(butW)))
+            if (GUILayout.Button(DownArrow, GUILayout.Width(butW)))
             {
                 if (numSats > 1)
                     numSats--;
@@ -420,7 +428,7 @@ namespace ResonantOrbitCalculator
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(new GUIContent("   Atm:", "Occlusion atmospheric modifier"));
                 var newsAtmOcclusion = GUILayout.TextField(sAtmOcclusion);
-                if (GUILayout.Button("^", GUILayout.Width(butW)))
+                if (GUILayout.Button(UpArrow, GUILayout.Width(butW)))
                 {
                     if (atmOcclusion < 1.1)
                         atmOcclusion += 0.01f;
@@ -428,7 +436,7 @@ namespace ResonantOrbitCalculator
                     newsAtmOcclusion = sAtmOcclusion;
                     draw = true;
                 }
-                if (GUILayout.Button("v", GUILayout.Width(butW)))
+                if (GUILayout.Button(DownArrow, GUILayout.Width(butW)))
                 {
                     if (atmOcclusion > 0)
                         atmOcclusion -= 0.01f;
@@ -452,7 +460,7 @@ namespace ResonantOrbitCalculator
                 GUILayout.BeginHorizontal();
                 GUILayout.Label(new GUIContent("   Vac:", "Occlusion vacuum modifier"));
                 var newsVacOcclusion = GUILayout.TextField(sVacOcclusion);
-                if (GUILayout.Button("^", GUILayout.Width(butW)))
+                if (GUILayout.Button(UpArrow, GUILayout.Width(butW)))
                 {
                     if (vacOcclusion < 1.1)
                         vacOcclusion += 0.01f;
@@ -460,7 +468,7 @@ namespace ResonantOrbitCalculator
                     newsVacOcclusion = sVacOcclusion;
                     draw = true;
                 }
-                if (GUILayout.Button("v", GUILayout.Width(butW)))
+                if (GUILayout.Button(DownArrow, GUILayout.Width(butW)))
                 {
                     if (vacOcclusion > 0)
                         vacOcclusion -= 0.01f;
