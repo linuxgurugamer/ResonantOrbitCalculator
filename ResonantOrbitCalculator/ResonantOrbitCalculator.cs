@@ -58,27 +58,19 @@ namespace ResonantOrbitCalculator
 
             if (upArrow == null)
             {
-#if false
-                if (ToolbarControl.LoadImageFromFile(ref upArrow, "GameData/ResonantOrbitCalculator/PluginData/Images/up"))
+                upArrow = new Texture2D(2, 2);
+                if (ToolbarControl.LoadImageFromFile(ref upArrow, KSPUtil.ApplicationRootPath + "GameData/ResonantOrbitCalculator/PluginData/Images/up"))
                     upContent = new GUIContent("", upArrow, "");
                 else
                     upContent = new GUIContent("^", null, "");
-#else
-                upArrow = GameDatabase.Instance.GetTexture("ResonantOrbitCalculator/Images/up", false);
-                upContent = new GUIContent("", upArrow, "");
-#endif
             }
             if (downArrow == null)
             {
-#if false
-                if (ToolbarControl.LoadImageFromFile(ref downArrow, "GameData/ResonantOrbitCalculator/PluginData/Images/down"))
+                downArrow = new Texture2D(2, 2);
+                if (ToolbarControl.LoadImageFromFile(ref downArrow, KSPUtil.ApplicationRootPath + "GameData/ResonantOrbitCalculator/PluginData/Images/down"))
                     downContent = new GUIContent("", downArrow, "");
                 else
                     downContent = new GUIContent("v", null, "");
-#else
-                downArrow = GameDatabase.Instance.GetTexture("ResonantOrbitCalculator/Images/down", false);
-                downContent = new GUIContent("", downArrow, "");
-#endif
             }
 
         }

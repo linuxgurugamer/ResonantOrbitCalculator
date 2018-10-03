@@ -535,9 +535,11 @@ namespace ResonantOrbitCalculator
             GUILayout.Label(OrbitCalc.burnDV);
             GUILayout.EndHorizontal();
 
+            Log.Info("LoadedSceneIsFlight: " + HighLogic.LoadedSceneIsFlight + ",    patchedConicsUnlocked: " + FlightGlobals.ActiveVessel.patchedConicsUnlocked());
             if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel.patchedConicsUnlocked())
             {
                 GUILayout.FlexibleSpace();
+                Log.Info("selectedOrbit: " + selectedOrbit);
                 if (selectedOrbit == SelectedOrbit.Ap)
                 {
                     GUILayout.BeginHorizontal();
@@ -580,6 +582,7 @@ namespace ResonantOrbitCalculator
                     }
                     GUILayout.EndHorizontal();
                 }
+                Log.Info("FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count(): " + FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count());
                 if (FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count() > 0)
                 {
                     GUILayout.BeginHorizontal();

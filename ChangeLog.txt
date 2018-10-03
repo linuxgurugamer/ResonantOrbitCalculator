@@ -1,4 +1,8 @@
-﻿0.0.3.1
+﻿0.0.3.2
+	Changed loading of arrows to use the ToolbarControl.LoadImageFromFile rather than relying on the KSP/Unity load
+	Deleted Images directory with contents, now using PluginData/Images
+
+0.0.3.1
 	Updated up/down arrows
 
 0.0.3
