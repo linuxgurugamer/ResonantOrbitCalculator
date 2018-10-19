@@ -1,0 +1,43 @@
+Kopernicus has a setting to save memory which interferes with the initial
+functioning of this mod, specifically, the creation of the planet images in a
+cache.
+
+
+Thanks to forum user @Gordon Dry for the following:
+
+    Disable Kopernicus onDemand where you find it:
+    	%useOnDemand = False
+    	%useManualMemoryManagement = False
+        
+    Don't forget to reenable it after the testing.
+    
+    Delete the files in
+    GameData\ResonantOrbitCalculator\PluginData\Cache\
+    then start the game one time.
+    Get to the Main Menu, wait a minute and then exit the game.
+    
+    --
+    
+    The cache files will not be overwritten once created, so you could set up 
+    a test install with only the planets, make a backup of the created cache 
+    and then copy the cache directly over on reinstalling the mod.
+    
+    You need at least:
+    
+        000_ClickThroughBlocker\
+        001_ToolbarControl\
+        CTTP\
+        EnvironmentalVisualEnhancements\
+        Kopernicus\
+        ModularFlightIntegrator\
+        ResonantOrbitCalculator\
+        Squad\
+    
+    plus everything what belongs to the planet pack, like for example for RSS with RSSVE:
+
+        KSCSwitcher\
+        RealSolarSystem\
+        RSSDateTime\
+        RSS-Textures\
+        RSSVE\
+    
