@@ -1,5 +1,7 @@
-﻿0.0.3.x
+﻿0.0.3.3
 	Added KOPERNICUS_NOTES
+	Fixed check for pre-existing planet thumbnail, if it exists, don't bother to regenerate
+	Build for 1.5
 
 0.0.3.2
 	Changed loading of arrows to use the ToolbarControl.LoadImageFromFile rather than relying on the KSP/Unity load

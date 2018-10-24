@@ -497,15 +497,17 @@ namespace ResonantOrbitCalculator
         {
             
             System.IO.Directory.CreateDirectory(filePath);
+
             System.IO.FileInfo file = new System.IO.FileInfo(filePath);
             foreach (CelestialBody body in PSystemManager.Instance.localBodies)
             {
-                if (!File.Exists(filePath))
+                string fileName = filePath + body.name + ".png";
+                if (!File.Exists(fileName))
                 {
                     Log.Info("PlanetSelector, generating thumbnail");
                     Texture2D thumb = GetPlanetThumbnail(body);
                     byte[] bytes = thumb.EncodeToPNG();
-                    File.WriteAllBytes(filePath + body.name + ".png", bytes);
+                    File.WriteAllBytes(fileName, bytes);
                     Destroy(thumb);
                 }
             }
