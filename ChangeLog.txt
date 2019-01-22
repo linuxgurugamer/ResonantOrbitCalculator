@@ -1,4 +1,7 @@
-﻿0.0.3.3
+﻿0.0.4
+	Updated code from KittopiaTech to make the thumbnail generation working again
+
+0.0.3.3
 	Added KOPERNICUS_NOTES
 	Fixed check for pre-existing planet thumbnail, if it exists, don't bother to regenerate
 	Build for 1.5
