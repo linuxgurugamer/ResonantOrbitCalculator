@@ -15,7 +15,7 @@ Therefore, this mod has an MIT license
 "Fine, but what do you want me to do about it?", asked Jeb
 "We need you to launch a series of relay satellites which will blanket the globe; bonus would be to cover Mun and Minmus as well"
 "That's going to be a lot of launches, can we afford it?"
-"Yes, it's really quite simple.  Each launch will carry multiple satellites, we just have to drop them off in the right orbit"
+"Yes, its really quite simple.  Each launch will carry multiple satellites, we just have to drop them off in the right orbit"
 Jebediah looked puzzled: "Huh?  And how do you expect us to do that accurately?"
 "Well, we just happen to have this handy, dandy resonant orbit calculator, makes the entire job simple to do"
 

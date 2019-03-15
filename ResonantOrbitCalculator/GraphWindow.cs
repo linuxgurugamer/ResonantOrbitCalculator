@@ -616,7 +616,7 @@ namespace ResonantOrbitCalculator
                                 {
                                     aID = KACWrapper.KAC.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.Raw, "Detachment # " + (i + 1).ToString(), timeToOrbit - 60);
 
-                                    KACWrapper.KAC.Alarms.First(z => z.ID == aID).Notes = "Detach satellite # " + (i + 1) + " and circularize it's orbit";
+                                    KACWrapper.KAC.Alarms.First(z => z.ID == aID).Notes = "Detach satellite # " + (i + 1) + " and circularize its orbit";
                                     KACWrapper.KAC.Alarms.First(z => z.ID == aID).AlarmMargin = 60;
                                     timeToOrbit += period;
                                 }

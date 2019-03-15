@@ -1,4 +1,8 @@
-﻿0.0.4
+﻿0.0.4.1
+	Fixed a grammer mistake
+	Removed KSP_VERSION from the .version file
+
+0.0.4
 	Updated code from KittopiaTech to make the thumbnail generation working again
 
 0.0.3.3
