@@ -1,4 +1,13 @@
-﻿0.0.4.1
+﻿0.0.5
+	Moved images out of pluginData folder, for performance (toolbar now uses the unBlur mod)
+	Moved PlanetSelector class into it's own file
+	Added code to check for Kopernicus, and if it does, writes a temporary cfg to disable the on-demand code in 
+		Kopernicuus at the next boot to initialize the thumbnails
+	Added entry to settings page to force generation of thumbnails at next boot, only available when Kopernicus is installed
+	Removed unnecessary "using" lines
+
+
+0.0.4.1
 	Fixed a grammer mistake
 	Removed KSP_VERSION from the .version file
 
