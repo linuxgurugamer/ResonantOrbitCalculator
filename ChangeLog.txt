@@ -5,6 +5,7 @@
 		Kopernicuus at the next boot to initialize the thumbnails
 	Added entry to settings page to force generation of thumbnails at next boot, only available when Kopernicus is installed
 	Removed unnecessary "using" lines
+	Updated AssemblyVersion.tt for location-independent builds
 
 
 0.0.4.1
