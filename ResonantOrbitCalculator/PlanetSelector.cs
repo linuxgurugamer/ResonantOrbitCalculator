@@ -4,16 +4,19 @@ using UnityEngine;
 
 namespace ResonantOrbitCalculator
 {
-    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
+    [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
     public class PlanetSelector : MonoBehaviour
     {
         public static string filePath { get { return KSPUtil.ApplicationRootPath + "GameData/ResonantOrbitCalculator/PluginData/Cache/"; } }
-
+        bool hasRun = false;
         /// <summary>
         /// Generate the thumbnails and create the body wrappers
         /// </summary>
-        public void Start()
+        public void FixedUpdate()
         {
+            if (hasRun)
+                return;
+            hasRun = true;
             // Special code for Kopernicus
             // If Kopernicus is loaded, then CheckAndInitializeKopernicus will check to see if it is initialized
             // If it isn't, it sets the flag and then returns.
@@ -22,6 +25,8 @@ namespace ResonantOrbitCalculator
             if (Kopernicus.HasKopernicus())
             {
                 if (Kopernicus.CheckAndInitializeKopernicus() == Kopernicus.KopernicusStatus.notInitialized)
+                    return;
+                if (Kopernicus.KopernicusDisabledConfigExists())
                     return;
             }
             System.IO.Directory.CreateDirectory(filePath);

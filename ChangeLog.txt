@@ -1,4 +1,8 @@
-﻿0.0.5
+﻿0.0.5.1
+	Moved thumbnail generation from the main menu to the space center scene
+	Added check for Kopernicus already generated
+
+0.0.5
 	Moved images out of pluginData folder, for performance (toolbar now uses the unBlur mod)
 	Moved PlanetSelector class into it's own file
 	Added code to check for Kopernicus, and if it does, writes a temporary cfg to disable the on-demand code in 
