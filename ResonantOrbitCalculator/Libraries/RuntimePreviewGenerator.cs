@@ -173,6 +173,15 @@ namespace ResonantOrbitCalculator
             set { m_transparentBackground = value; }
         }
 
+        private static Boolean m_adjustLighting;
+
+        public static Boolean AdjustLighting
+        {
+            get { return m_adjustLighting; }
+            set { m_adjustLighting = value; }
+        }
+
+
         static RuntimePreviewGenerator()
         {
             PreviewRenderCamera = null;
@@ -228,9 +237,15 @@ namespace ResonantOrbitCalculator
             Light light = lightObject.AddOrGetComponent<Light>();
             lightObject.transform.position = model.position + new Vector3(0, 0, -36);
             light.intensity = 1.5f;
+            if (AdjustLighting)
+            {
+                light.intensity = 1.0f;
+                AdjustLighting = false;
+            }
             light.shadowBias = 0.047f;
             light.shadows = LightShadows.Soft;
             light.type = LightType.Directional;
+            light.renderMode = LightRenderMode.ForceVertex; //removes the "spotlight" like reflection on the planets
 
             light.color = lightColor ?? Color.white;
             lightObject.transform.RotateAround(model.position, Vector3.right, lightDirection.x);

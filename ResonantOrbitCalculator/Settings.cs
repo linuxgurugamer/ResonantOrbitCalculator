@@ -42,41 +42,9 @@ namespace ResonantOrbitCalculator
             toolTip = "If false, the background in flight will be dark grey")]
         public bool flightSOIWhite = false;
 
-        [GameParameters.CustomParameterUI("Regenerate Kopernicus Images",
-        toolTip = "If true, will create a config file to disable the Kopernicus's mod\n" +
-                  "'useOnDemand' and 'useManualMemoryManagement'\n" +
-                  "options at the next boot.  This will be reset once\n" +
-                  "the new images have been generated")]
-        public bool regenerateKopernicusImages = false;
-
-
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         { }
-        bool firstTime = true;
-        public override bool Enabled(MemberInfo member, GameParameters parameters)
-        {
-            if (member.Name == "regenerateKopernicusImages" && !Kopernicus.HasKopernicus())
-                return false;
-            if (firstTime)
-            {
-                if (Kopernicus.KopernicusDisabledConfigExists())
-                {
-                    regenerateKopernicusImages = false;
-                }
-                else
-                    regenerateKopernicusImages = true;
-                firstTime = false;
-            }
-            if (regenerateKopernicusImages)
-            {
-                Kopernicus.WriteKopernicusConfig(false);
-            }
-            else
-            {
-                Kopernicus.DisableConfig();
-            }
-            return true;
-        }
+
         public override bool Interactible(MemberInfo member, GameParameters parameters)
         {
             return true;
