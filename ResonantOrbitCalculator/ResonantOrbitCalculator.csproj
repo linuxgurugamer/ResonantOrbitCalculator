@@ -37,7 +37,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
-    <Compile Include="Kopernicus.cs" />
+    <Compile Include="Libraries\KopernicusOnDemand.cs" />
     <Compile Include="Libraries\BitmapDrawing.cs" />
     <Compile Include="Body.cs" />
     <Compile Include="chart.cs" />

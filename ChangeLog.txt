@@ -1,4 +1,9 @@
-﻿0.0.5.1
+﻿0.0.5.2
+	Moved images back into PluginData 
+	Thanks to @4x4cheesecake for this:
+		Fix planet preview generation
+
+0.0.5.1
 	Moved thumbnail generation from the main menu to the space center scene
 	Added check for Kopernicus already generated
 

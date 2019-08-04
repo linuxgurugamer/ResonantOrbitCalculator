@@ -59,7 +59,7 @@ namespace ResonantOrbitCalculator
             if (upArrow == null)
             {
                 upArrow = new Texture2D(2, 2);
-                if (ToolbarControl.LoadImageFromFile(ref upArrow, KSPUtil.ApplicationRootPath + "GameData/ResonantOrbitCalculator/Images/up"))
+                if (ToolbarControl.LoadImageFromFile(ref upArrow, KSPUtil.ApplicationRootPath + "GameData/ResonantOrbitCalculator/PluginData/Images/up"))
                     upContent = new GUIContent("", upArrow, "");
                 else
                     upContent = new GUIContent("^", null, "");
@@ -67,7 +67,7 @@ namespace ResonantOrbitCalculator
             if (downArrow == null)
             {
                 downArrow = new Texture2D(2, 2);
-                if (ToolbarControl.LoadImageFromFile(ref downArrow, KSPUtil.ApplicationRootPath + "GameData/ResonantOrbitCalculator/Images/down"))
+                if (ToolbarControl.LoadImageFromFile(ref downArrow, KSPUtil.ApplicationRootPath + "GameData/ResonantOrbitCalculator/PluginData/Images/down"))
                     downContent = new GUIContent("", downArrow, "");
                 else
                     downContent = new GUIContent("v", null, "");
@@ -136,8 +136,8 @@ namespace ResonantOrbitCalculator
                  ApplicationLauncher.AppScenes.MAPVIEW,
                  MODID,
                 "ResonantOrbitCalculatorButton",
-                "ResonantOrbitCalculator/Images/ResonantOrbit_38",
-                "ResonantOrbitCalculator/Images/ResonantOrbit_24",
+                "ResonantOrbitCalculator/PluginData/Images/ResonantOrbit_38",
+                "ResonantOrbitCalculator/PluginData/Images/ResonantOrbit_24",
                 MODNAME
             );
 
