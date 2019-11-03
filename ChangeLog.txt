@@ -1,4 +1,10 @@
-﻿0.0.5.2
+﻿ChangeLog
+
+0.0.6
+	Added InstallChecker
+	Updated for KSP 1.8
+
+0.0.5.2
 	Moved images back into PluginData 
 	Thanks to @4x4cheesecake for this:
 		Fix planet preview generation
