@@ -1,5 +1,9 @@
 ﻿ChangeLog
 
+0.0.6.1
+	Fixed incorrect alarms being added to KAC for sat deployments
+	Fixed up/down arrows being shown in the increment/decrement buttons
+
 0.0.6
 	Added InstallChecker
 	Updated for KSP 1.8

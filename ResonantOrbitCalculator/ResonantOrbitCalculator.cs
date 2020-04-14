@@ -32,8 +32,8 @@ namespace ResonantOrbitCalculator
         public GraphWindow graphWindow;
         internal MechjebWrapper mucore = new MechjebWrapper();
 
-        static Texture2D upArrow;
-        static Texture2D downArrow;
+        static Texture2D upArrow = null;
+        static Texture2D downArrow = null;
         internal GUIContent upContent;
         internal GUIContent downContent;
 
@@ -118,7 +118,6 @@ namespace ResonantOrbitCalculator
         }
 
         
-        // static ApplicationLauncherButton launcher_btn;
         static ToolbarControl toolbarControl = null;
         internal const string MODID = "ResonantOrbitCalculator_NS";
         internal const string MODNAME = "Resonant Orbit Calculator";
@@ -199,8 +198,8 @@ namespace ResonantOrbitCalculator
             while (File.Exists(filePath + fname + i.ToString() + ".png"))
                 i++;
             File.WriteAllBytes(filePath + fname + i.ToString() + ".png", bytes);
-    
-            DestroyObject(captureTex);
+
+            Destroy(captureTex);
         }
 
     }

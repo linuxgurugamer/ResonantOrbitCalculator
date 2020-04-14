@@ -608,6 +608,9 @@ namespace ResonantOrbitCalculator
                                     KACWrapper.KAC.Alarms.First(z => z.ID == aID).Notes = "Put carrier craft into resonant orbit";
                                     KACWrapper.KAC.Alarms.First(z => z.ID == aID).AlarmMargin = 60;
                                 }
+
+                                period = OrbitCalc.carrierorbit.T;
+
                                 timeToOrbit += period;
                                 for (int i = 0; i < numSats; i++)
                                 {

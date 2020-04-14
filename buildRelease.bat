@@ -25,6 +25,9 @@ rem README is the readme file
 
 set GAMEDIR=ResonantOrbitCalculator
 set GAMEDATA="GameData\"
+
+set H=R:\KSP_1.8.1_JNSQ_ResonantOrbit
+
 set VERSIONFILE=%GAMEDIR%.version
 set LICENSE=License.txt
 set README=README.md
