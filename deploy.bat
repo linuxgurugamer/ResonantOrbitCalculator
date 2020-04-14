@@ -9,8 +9,6 @@ rem    but not always
 
 set H=%KSPDIR%
 
-set H=R:\KSP_1.8.1_JNSQ_ResonantOrbit
-
 set GAMEDIR=ResonantOrbitCalculator
 set GAMEDATA="GameData"
 set VERSIONFILE=%GAMEDIR%.version
