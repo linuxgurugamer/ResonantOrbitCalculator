@@ -1,5 +1,8 @@
 ﻿ChangeLog
 
+0.0.6.2
+	Added informative text to explain how to use with KAC when KAC is available
+
 0.0.6.1
 	Fixed incorrect alarms being added to KAC for sat deployments
 	Fixed up/down arrows being shown in the increment/decrement buttons

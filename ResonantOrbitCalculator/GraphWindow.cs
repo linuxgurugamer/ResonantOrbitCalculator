@@ -43,8 +43,8 @@ namespace ResonantOrbitCalculator
         static GUIStyle toggleMinLOSNormal;
         static GUIStyle labelResonantOrbit;
 
-        static GUIStyle textStyle ;
-        static GUIStyle textErrorStyle ;
+        static GUIStyle textStyle;
+        static GUIStyle textErrorStyle;
 
         static GUIStyle buttonRed;
 
@@ -141,8 +141,8 @@ namespace ResonantOrbitCalculator
                 buttonRed.normal.textColor = Color.red;
                 buttonRed.hover.textColor = Color.red;
 
-                 textStyle = new GUIStyle(GUI.skin.textField);
-                 textErrorStyle = new GUIStyle(GUI.skin.textField);
+                textStyle = new GUIStyle(GUI.skin.textField);
+                textErrorStyle = new GUIStyle(GUI.skin.textField);
                 textErrorStyle.normal.textColor = Color.red;
                 textErrorStyle.hover.textColor = Color.red;
                 textErrorStyle.focused.textColor = Color.red;
@@ -225,7 +225,16 @@ namespace ResonantOrbitCalculator
             GUILayout.Label(OrbitCalc.header[1]);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+
             GUILayout.Box(graph_texture);
+            if (KACWrapper.APIReady)
+            {
+                GUILayout.Space(10);
+                GUILayout.Label("To use Kerbal Alarm Clock (KAC), select either Current Ap or Current Pe,");
+                GUILayout.Label("and then select from the options listed at the bottom");
+            }
+
+
             GUILayout.EndVertical();
 
 
@@ -318,11 +327,11 @@ namespace ResonantOrbitCalculator
             OrbitCalc.periodEntry = GUI.GetNameOfFocusedControl() == "periodHour" ||
                 GUI.GetNameOfFocusedControl() == "periodMin" ||
                 GUI.GetNameOfFocusedControl() == "periodSec";
-            
 
-                bh = Double.TryParse(h, out dh);
-                bm = Double.TryParse(m, out dm);
-                bs = Double.TryParse(s, out ds);
+
+            bh = Double.TryParse(h, out dh);
+            bm = Double.TryParse(m, out dm);
+            bs = Double.TryParse(s, out ds);
             if (h != OrbitCalc.periodHour || m != OrbitCalc.periodMin || s != OrbitCalc.periodSec)
             {
                 if (bh && bm && bs)
