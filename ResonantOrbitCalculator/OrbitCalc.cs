@@ -69,12 +69,31 @@ namespace ResonantOrbitCalculator
         public static string burnDV = "";
         public static double dBurnDV = 0f;
         public static double minLOS;
+        public static string actualLOSlength;
         public static string[] header = new string[2];
         public static bodydef body;
 
         public static orbitdef satelliteorbit;
         public static orbitdef carrierorbit;
 
+        public enum Units { m, km, Mm, Gm};
+        public static Units units = Units.m;
+        //public static bool m = true, km = false, Mm = false, Gm = false;
+
+        public static string GetFormattedDistance(double v, string format)
+        {
+            switch (units)
+            {
+                case Units.m:
+                    return v.ToString(format) + " m";
+                case Units.km:
+                    return (v / 1000).ToString(format) + " km";
+                case Units.Mm:
+                    return (v / 1000000).ToString(format) + " Mm";
+                default:
+                    return (v / 1000000000).ToString(format) + " Gm";
+            }
+        }
         public static void Update()
         {
 
@@ -88,7 +107,8 @@ namespace ResonantOrbitCalculator
             }
             if (body.geoAlt > 0 && body.geoSMA < body.SOI)
             {
-                synchrorbit = body.geoAlt.ToString("N") + " m";
+                //synchrorbit = body.geoAlt.ToString("N") + " m";
+                synchrorbit = GetFormattedDistance(body.geoAlt, "N");
             }
             else
             {
@@ -98,7 +118,8 @@ namespace ResonantOrbitCalculator
             minLOS = minLOSCalc(body);
             if (minLOS < body.SOIAlt() && minLOS > 0)
             {
-                losorbit = minLOS.ToString("N") + " m";
+                //losorbit = minLOS.ToString("N") + " m";
+                losorbit = GetFormattedDistance(minLOS,"N");
                 losOrbitWarning = (minLOS < body.atm);
 
                 constellationWarning = sataltitude * 1.01 < minLOS;
@@ -134,11 +155,13 @@ namespace ResonantOrbitCalculator
                     periodSec = satelliteorbit.op_p(orbitdef.timePos.sec).ToString();
                 }
                 /* if (carrierorbit.Ap > 0) */
-                carrierAp = carrierorbit.Ap.ToString("N1") + " m";
+                //carrierAp = carrierorbit.Ap.ToString("N1") + " m";
+                carrierAp = GetFormattedDistance(carrierorbit.Ap,"N1");
                 carrierApWarning = (carrierorbit.Ap < body.atm || carrierorbit.Ap < 0);
 
                 /*if (carrierorbit.Pe > 0)*/
-                carrierPe = carrierorbit.Pe.ToString("N1") + " m";
+                //carrierPe = carrierorbit.Pe.ToString("N1") + " m";
+                carrierPe = GetFormattedDistance(carrierorbit.Pe, "N1");
 
 
                 carrierPeWarning = (carrierorbit.Pe < body.atm);
@@ -148,6 +171,9 @@ namespace ResonantOrbitCalculator
 
                 dBurnDV = burnCalc(satelliteorbit, carrierorbit, body);
                 burnDV = dBurnDV.ToString("N2") + " m/s";
+
+                // actualLOSlength = (2 * (satelliteorbit.a(satelliteorbit.T) + satelliteorbit.body.body.Radius) * Math.Sin(Math.PI / satcount)).ToString("N1");
+                actualLOSlength = GetFormattedDistance(2 * (satelliteorbit.a(satelliteorbit.T) + satelliteorbit.body.body.Radius) * Math.Sin(Math.PI / satcount),"N1");
             }
 
 

@@ -31,8 +31,6 @@ namespace ResonantOrbitCalculator
         public bool shown = false;
         static PluginConfiguration conf;
 
-        static bool init_gui = false;
-
         GUIStyle winStyle;
         GUIStyle buttonStyle;
         static GUIStyle normalLabel;
@@ -104,53 +102,47 @@ namespace ResonantOrbitCalculator
                 GUI.Label(new Rect(2, 0, tooltipRect.width - 2, tooltipRect.height), tooltip, HighLogic.Skin.label);
         }
 
+        static internal void InitGuiStyles()
+        {
+            normalLabel = new GUIStyle(GUI.skin.label);
 
+            warningLabel = new GUIStyle(GUI.skin.label);
+            warningLabel.normal.textColor = Color.red;
+            warningLabel.normal.background = new Texture2D(2, 2);
+
+            headerLabel = new GUIStyle(GUI.skin.label);
+            headerLabel.normal.textColor = Color.white;
+
+            int size = 4; ;
+            Color[] pix = new Color[size];
+            for (int i = 0; i < size; i++)
+                pix[i] = Color.yellow;
+            warningLabel.normal.background.SetPixels(pix);
+            warningLabel.normal.background.Apply();
+
+
+            toggleMinLOSWarning = new GUIStyle(GUI.skin.toggle);
+            toggleMinLOSWarning.normal.textColor = Color.red;
+
+            toggleMinLOSNormal = new GUIStyle(GUI.skin.toggle);
+            toggleMinLOSNormal.normal.textColor = Color.cyan;
+
+            labelResonantOrbit = new GUIStyle(GUI.skin.label);
+            labelResonantOrbit.normal.textColor = Color.green;
+            labelResonantOrbit.fontStyle = FontStyle.Bold;
+            buttonRed = new GUIStyle(GUI.skin.button);
+            buttonRed.normal.textColor = Color.red;
+            buttonRed.hover.textColor = Color.red;
+
+            textStyle = new GUIStyle(GUI.skin.textField);
+            textErrorStyle = new GUIStyle(GUI.skin.textField);
+            textErrorStyle.normal.textColor = Color.red;
+            textErrorStyle.hover.textColor = Color.red;
+            textErrorStyle.focused.textColor = Color.red;
+
+        }
         public void OnGUI()
         {
-            if (!init_gui)
-            {
-                init_gui = true;
-
-                normalLabel = new GUIStyle(GUI.skin.label);
-
-                warningLabel = new GUIStyle(GUI.skin.label);
-                warningLabel.normal.textColor = Color.red;
-                warningLabel.normal.background = new Texture2D(2, 2);
-
-                headerLabel = new GUIStyle(GUI.skin.label);
-                headerLabel.normal.textColor = Color.white;
-
-                int size = 4; ;
-                Color[] pix = new Color[size];
-                for (int i = 0; i < size; i++)
-                    pix[i] = Color.yellow;
-                warningLabel.normal.background.SetPixels(pix);
-                warningLabel.normal.background.Apply();
-
-
-                toggleMinLOSWarning = new GUIStyle(GUI.skin.toggle);
-                toggleMinLOSWarning.normal.textColor = Color.red;
-
-                toggleMinLOSNormal = new GUIStyle(GUI.skin.toggle);
-                toggleMinLOSNormal.normal.textColor = Color.cyan;
-
-                labelResonantOrbit = new GUIStyle(GUI.skin.label);
-                labelResonantOrbit.normal.textColor = Color.green;
-                labelResonantOrbit.fontStyle = FontStyle.Bold;
-                buttonRed = new GUIStyle(GUI.skin.button);
-                buttonRed.normal.textColor = Color.red;
-                buttonRed.hover.textColor = Color.red;
-
-                textStyle = new GUIStyle(GUI.skin.textField);
-                textErrorStyle = new GUIStyle(GUI.skin.textField);
-                textErrorStyle.normal.textColor = Color.red;
-                textErrorStyle.hover.textColor = Color.red;
-                textErrorStyle.focused.textColor = Color.red;
-
-
-
-            }
-
             EditorLogic editorlogic = EditorLogic.fetch;
             if (shown)
             {
@@ -206,456 +198,529 @@ namespace ResonantOrbitCalculator
 
         void _drawGUI(int id)
         {
-            UpArrow = ResonantOrbitCalculator.Instance.upContent;
-            DownArrow = ResonantOrbitCalculator.Instance.downContent;
-
-            GUILayout.BeginHorizontal(GUILayout.Width(wnd_width));
-
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal(GUILayout.Width(wnd_width));
-            GUILayout.BeginVertical(GUILayout.Width(GRAPH_WIDTH + 10));
-            // draw graph box
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            GUILayout.Label(OrbitCalc.header[0]);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            GUILayout.Label(OrbitCalc.header[1]);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.Box(graph_texture);
-            if (KACWrapper.APIReady)
-            {
-                GUILayout.Space(10);
-                GUILayout.Label("To use Kerbal Alarm Clock (KAC), select either Current Ap or Current Pe,");
-                GUILayout.Label("and then select from the options listed at the bottom");
-            }
-
-
-            GUILayout.EndVertical();
-
-
-            // draw side text
-            GUILayout.BeginVertical(GUILayout.Width(wnd_width - GRAPH_WIDTH - 30));
+            UpArrow = ResonantOrbitCalculator.upContent;
+            DownArrow = ResonantOrbitCalculator.downContent;
             bool draw = false;
 
-            if (firstTime)
+            using (new GUILayout.HorizontalScope(GUILayout.Width(wnd_width)))
+            { }
+
+            using (new GUILayout.HorizontalScope())
             {
-                firstTime = false;
-                draw = true;
-            }
-            // if (!PlanetSelection.isActive)
-            {
-                if (GUILayout.Button("Select Planet"))
+                using (new GUILayout.VerticalScope(GUILayout.Width(GRAPH_WIDTH + 10)))
                 {
-                    if (!PlanetSelection.isActive)
-                        planetSelection = new GameObject().AddComponent<PlanetSelection>();
-                    else
-                        planetSelection.DestroyThis();
-                }
-            }
-
-            GUILayout.BeginHorizontal();
-
-            GUILayout.Label(new GUIContent("Number of satellites:", "Total number of satellites to arrange"));
-
-            var newsNumSats = GUILayout.TextField(sNumSats);
-
-            int butW = 19;
-            if (GUILayout.Button(UpArrow, GUILayout.Width(butW)))
-            {
-                numSats++;
-                sNumSats = numSats.ToString();
-                newsNumSats = sNumSats;
-                draw = true;
-            }
-            if (GUILayout.Button(DownArrow, GUILayout.Width(butW)))
-            {
-                if (numSats > 1)
-                    numSats--;
-                sNumSats = numSats.ToString();
-                newsNumSats = sNumSats;
-                draw = true;
-            }
-            if (sNumSats != newsNumSats)
-            {
-                bValidNumSats = int.TryParse(newsNumSats, out iTmp);
-                if (!bValidNumSats)
-                    sNumSats = numSats.ToString();
-                else
-                {
-                    numSats = iTmp;
-                    sNumSats = newsNumSats;
-                    draw = true;
-                }
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-
-            GUILayout.Label(new GUIContent("Altitude:", "Orbital altitude"));
-            GUI.SetNextControlName("altitude");
-            string newsOrbitAltitude = GUILayout.TextField(sOrbitAltitude);
-            if (newsOrbitAltitude != sOrbitAltitude)
-            {
-                bValidOrbitAltitude = double.TryParse(newsOrbitAltitude, out dTmp);
-                if (bValidOrbitAltitude)
-                {
-                    selectedOrbit = SelectedOrbit.None;
-                    orbitAltitude = dTmp;
-                }
-                sOrbitAltitude = orbitAltitude.ToString("F0");
-                draw = true;
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Orbital Period: ");
-            GUILayout.FlexibleSpace();
-
-            GUI.SetNextControlName("periodHour");
-            string h = GUILayout.TextField(OrbitCalc.periodHour, bh ? textStyle : textErrorStyle, GUILayout.MinWidth(25));
-            GUILayout.Label("h ");
-            GUI.SetNextControlName("periodMin");
-            string m = GUILayout.TextField(OrbitCalc.periodMin, bm ? textStyle : textErrorStyle, GUILayout.MinWidth(25));
-            GUILayout.Label("m ");
-            GUI.SetNextControlName("periodSec");
-            string s = GUILayout.TextField(OrbitCalc.periodSec, bs ? textStyle : textErrorStyle, GUILayout.MinWidth(25));
-            GUILayout.Label("s");
-            OrbitCalc.periodEntry = GUI.GetNameOfFocusedControl() == "periodHour" ||
-                GUI.GetNameOfFocusedControl() == "periodMin" ||
-                GUI.GetNameOfFocusedControl() == "periodSec";
-
-
-            bh = Double.TryParse(h, out dh);
-            bm = Double.TryParse(m, out dm);
-            bs = Double.TryParse(s, out ds);
-            if (h != OrbitCalc.periodHour || m != OrbitCalc.periodMin || s != OrbitCalc.periodSec)
-            {
-                if (bh && bm && bs)
-                {
-                    double T = dh * 3600 + dm * 60 + ds;
-
-                    orbitAltitude = OrbitCalc.satelliteorbit.a(T);
-                    sOrbitAltitude = orbitAltitude.ToString("F0");
-                    draw = true;
-                }
-                OrbitCalc.periodHour = h;
-                OrbitCalc.periodMin = m;
-                OrbitCalc.periodSec = s;
-            }
-
-            GUILayout.EndHorizontal();
-
-
-            if (OrbitCalc.synchrorbit == "" || OrbitCalc.synchrorbit == "n/a")
-                GUI.enabled = false;
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Toggle(synchronousOrbit, new GUIContent("Synchronous orbit (" + OrbitCalc.synchrorbit + ")", "Set the altitude to have the satellites be in a geosynchronous orbit")))
-            {
-                selectedOrbit = SelectedOrbit.Synchronous;
-
-                orbitAltitude = OrbitCalc.body.geoAlt;
-                sOrbitAltitude = orbitAltitude.ToString();
-                OrbitCalc.periodEntry = false;
-                draw = true;
-            }
-            GUILayout.EndHorizontal();
-            GUI.enabled = true;
-            GUILayout.Space(10);
-            GUILayout.BeginHorizontal();
-            if (OrbitCalc.losorbit == "" || OrbitCalc.losorbit == "n/a")
-                GUI.enabled = false;
-
-            if (GUILayout.Toggle(minLOSorbit, new GUIContent("Minimum LOS orbit (" + OrbitCalc.losorbit + ")", "Set the altitude to the minimum altitude possible to maintain a Line of Sight"),
-                OrbitCalc.losOrbitWarning ? toggleMinLOSWarning : toggleMinLOSNormal))
-            {
-                selectedOrbit = SelectedOrbit.MinLOS;
-                orbitAltitude = OrbitCalc.minLOS;
-                sOrbitAltitude = orbitAltitude.ToString();
-                OrbitCalc.periodEntry = false;
-                draw = true;
-            }
-            GUILayout.EndHorizontal();
-            GUI.enabled = true;
-            if (HighLogic.LoadedSceneIsFlight)
-            {
-                GUILayout.Space(10);
-                GUILayout.BeginHorizontal();
-                bool warning = false;
-                warning = (FlightGlobals.activeTarget.orbit.ApA < FlightGlobals.ActiveVessel.mainBody.atmosphereDepth);
-
-                if (GUILayout.Toggle(currentAp, new GUIContent("Current Ap (" + FlightGlobals.activeTarget.orbit.ApA.ToString("N0") + ")", "Set the altitude to the current vessel's Ap"),
-                    warning ? toggleMinLOSWarning : GUI.skin.toggle))
-                {
-                    selectedOrbit = SelectedOrbit.Ap;
-                    orbitAltitude = Math.Round(FlightGlobals.activeTarget.orbit.ApA);
-                    sOrbitAltitude = orbitAltitude.ToString();
-                    OrbitCalc.periodEntry = false;
-                    draw = true;
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.Space(10);
-                GUILayout.BeginHorizontal();
-                warning = (FlightGlobals.activeTarget.orbit.PeA < FlightGlobals.ActiveVessel.mainBody.atmosphereDepth);
-                if (FlightGlobals.activeTarget.orbit.PeA < 1)
-                    GUI.enabled = false;
-                if (GUILayout.Toggle(currentPe, new GUIContent("Current Pe (" + FlightGlobals.activeTarget.orbit.PeA.ToString("N0") + ")", "Set the altitude to the current vessel's Pe"),
-                    OrbitCalc.losOrbitWarning ? toggleMinLOSWarning : GUI.skin.toggle))
-                {
-                    selectedOrbit = SelectedOrbit.Pe;
-                    orbitAltitude = Math.Round(FlightGlobals.activeTarget.orbit.PeA);
-                    sOrbitAltitude = orbitAltitude.ToString();
-                    OrbitCalc.periodEntry = false;
-                    draw = true;
-                }
-                GUI.enabled = true;
-                GUILayout.EndHorizontal();
-            }
-
-            GUILayout.Space(10);
-            GUILayout.BeginHorizontal();
-
-            bool newshowLOSlines = GUILayout.Toggle(showLOSlines, new GUIContent("Show LOS lines", "Show the Line Of Sight lines"));
-            if (newshowLOSlines != showLOSlines)
-            {
-                draw = true;
-                showLOSlines = newshowLOSlines;
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-
-            bool newocclusionModifiers = GUILayout.Toggle(occlusionModifiers, new GUIContent("Occlusion modifiers", "Enable occlusion modifiers for vacuum and atmospheres"));
-            GUILayout.EndHorizontal();
-            if (occlusionModifiers)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label(new GUIContent("   Atm:", "Occlusion atmospheric modifier"));
-                var newsAtmOcclusion = GUILayout.TextField(sAtmOcclusion);
-                if (GUILayout.Button(UpArrow, GUILayout.Width(butW)))
-                {
-                    if (atmOcclusion < 1.1)
-                        atmOcclusion += 0.01f;
-                    sAtmOcclusion = atmOcclusion.ToString("F2");
-                    newsAtmOcclusion = sAtmOcclusion;
-                    draw = true;
-                }
-                if (GUILayout.Button(DownArrow, GUILayout.Width(butW)))
-                {
-                    if (atmOcclusion > 0)
-                        atmOcclusion -= 0.01f;
-                    sAtmOcclusion = atmOcclusion.ToString("F2");
-                    newsAtmOcclusion = sAtmOcclusion;
-                    draw = true;
-                }
-                if (newsAtmOcclusion != sAtmOcclusion)
-                {
-                    bValidAtmOcclusion = double.TryParse(newsAtmOcclusion, out dTmp);
-                    if (!bValidAtmOcclusion)
-                        sAtmOcclusion = atmOcclusion.ToString("F2");
-                    else
+                    // draw graph box
+                    using (new GUILayout.HorizontalScope())
                     {
-                        atmOcclusion = dTmp;
-                        sAtmOcclusion = newsAtmOcclusion;
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Label(OrbitCalc.header[0]);
+                        GUILayout.FlexibleSpace();
+                    }
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.FlexibleSpace();
+                        GUILayout.Label(OrbitCalc.header[1]);
+                        GUILayout.FlexibleSpace();
+                    }
+
+                    GUILayout.Box(graph_texture);
+                    using (new GUILayout.HorizontalScope())
+                    {
+
+
+                        GUILayout.Label("Units:");
+                        bool m1 = GUILayout.Toggle(OrbitCalc.units == OrbitCalc.Units.m, "Meters", GUI.skin.button);
+                        if (m1 && OrbitCalc.units != OrbitCalc.Units.m)
+                        {
+                            OrbitCalc.units = OrbitCalc.Units.m;
+                            sOrbitAltitude = orbitAltitude.ToString("F0");
+                            draw = true;
+                        }
+                        bool km1 = GUILayout.Toggle(OrbitCalc.units == OrbitCalc.Units.km, "Kilometers", GUI.skin.button);
+                        if (km1 && OrbitCalc.units != OrbitCalc.Units.km)
+                        {
+                            OrbitCalc.units = OrbitCalc.Units.km;
+                            sOrbitAltitude = (orbitAltitude / 1000).ToString("F3");
+                            draw = true;
+                        }
+                        bool Mm1 = GUILayout.Toggle(OrbitCalc.units == OrbitCalc.Units.Mm, "Megameters", GUI.skin.button);
+                        if (Mm1 && OrbitCalc.units != OrbitCalc.Units.Mm)
+                        {
+                            OrbitCalc.units = OrbitCalc.Units.Mm;
+                            sOrbitAltitude = (orbitAltitude / 1000000).ToString("F3");
+                            draw = true;
+                        }
+                        bool Gm1 = GUILayout.Toggle(OrbitCalc.units == OrbitCalc.Units.Gm, "Gigameters", GUI.skin.button);
+                        if (Gm1 && OrbitCalc.units != OrbitCalc.Units.Gm)
+                        {
+                            OrbitCalc.units = OrbitCalc.Units.Gm;
+                            sOrbitAltitude = (orbitAltitude / 1000000000).ToString("F3");
+                            draw = true;
+                        }
+                    }
+                    if (KACWrapper.APIReady)
+                    {
+                        GUILayout.Space(10);
+                        GUILayout.Label("To use Kerbal Alarm Clock (KAC), select either Current Ap or Current Pe,");
+                        GUILayout.Label("and then select from the options listed at the bottom");
+                    }
+                }
+
+                // draw side text
+                using (new GUILayout.VerticalScope(GUILayout.Width(wnd_width - GRAPH_WIDTH - 30)))
+                {
+
+                    if (firstTime)
+                    {
+                        firstTime = false;
                         draw = true;
                     }
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label(new GUIContent("   Vac:", "Occlusion vacuum modifier"));
-                var newsVacOcclusion = GUILayout.TextField(sVacOcclusion);
-                if (GUILayout.Button(UpArrow, GUILayout.Width(butW)))
-                {
-                    if (vacOcclusion < 1.1)
-                        vacOcclusion += 0.01f;
-                    sVacOcclusion = vacOcclusion.ToString("F2");
-                    newsVacOcclusion = sVacOcclusion;
-                    draw = true;
-                }
-                if (GUILayout.Button(DownArrow, GUILayout.Width(butW)))
-                {
-                    if (vacOcclusion > 0)
-                        vacOcclusion -= 0.01f;
-                    sVacOcclusion = vacOcclusion.ToString("F2");
-                    newsVacOcclusion = sVacOcclusion;
-                    draw = true;
-                }
-                if (newsVacOcclusion != sVacOcclusion)
-                {
-                    bValidVacOcclusion = Double.TryParse(newsVacOcclusion, out dTmp);
-                    if (!bValidVacOcclusion)
-                        sVacOcclusion = vacOcclusion.ToString("F2");
-                    else
+                    // if (!PlanetSelection.isActive)
                     {
-                        vacOcclusion = dTmp;
-                        sVacOcclusion = newsVacOcclusion;
+                        if (GUILayout.Button("Select Planet"))
+                        {
+                            if (!PlanetSelection.isActive)
+                                planetSelection = new GameObject().AddComponent<PlanetSelection>();
+                            else
+                                planetSelection.DestroyThis();
+                        }
+                    }
+
+                    int butW = 19;
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Label(new GUIContent("Number of satellites:", "Total number of satellites to arrange"));
+
+                        var newsNumSats = GUILayout.TextField(sNumSats);
+
+                        if (GUILayout.Button(UpArrow, GUILayout.Width(butW)))
+                        {
+                            numSats++;
+                            sNumSats = numSats.ToString();
+                            newsNumSats = sNumSats;
+                            draw = true;
+                        }
+                        if (GUILayout.Button(DownArrow, GUILayout.Width(butW)))
+                        {
+                            if (numSats > 1)
+                                numSats--;
+                            sNumSats = numSats.ToString();
+                            newsNumSats = sNumSats;
+                            draw = true;
+                        }
+                        if (sNumSats != newsNumSats)
+                        {
+                            bValidNumSats = int.TryParse(newsNumSats, out iTmp);
+                            if (!bValidNumSats)
+                                sNumSats = numSats.ToString();
+                            else
+                            {
+                                numSats = iTmp;
+                                sNumSats = newsNumSats;
+                                draw = true;
+                            }
+                        }
+                    }
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Label(new GUIContent("Altitude:", "Orbital altitude"));
+                        GUI.SetNextControlName("altitude");
+                        string newsOrbitAltitude = GUILayout.TextField(sOrbitAltitude);
+                        if (newsOrbitAltitude != sOrbitAltitude)
+                        {
+                            bValidOrbitAltitude = double.TryParse(newsOrbitAltitude, out dTmp);
+
+
+                            if (bValidOrbitAltitude)
+                            {
+                                selectedOrbit = SelectedOrbit.None;
+                                switch (OrbitCalc.units)
+                                {
+                                    case OrbitCalc.Units.m:
+                                        sOrbitAltitude = dTmp.ToString("F0");
+                                        break;
+                                    case OrbitCalc.Units.km:
+                                        sOrbitAltitude = dTmp.ToString("F3");
+                                        dTmp *= 1000;
+                                        break;
+                                    case OrbitCalc.Units.Mm:
+                                        sOrbitAltitude = dTmp.ToString("F3");
+                                        dTmp *= 1000000;
+                                        break;
+                                    default:
+                                        sOrbitAltitude = dTmp.ToString("F3");
+                                        dTmp *= 1000000000;
+                                        break;
+                                }
+                                orbitAltitude = dTmp;
+                            }
+                            draw = true;
+                        }
+                    }
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Label("Orbital Period: ");
+                        GUILayout.FlexibleSpace();
+
+                        GUI.SetNextControlName("periodHour");
+                        string h = GUILayout.TextField(OrbitCalc.periodHour, bh ? textStyle : textErrorStyle, GUILayout.MinWidth(25));
+                        GUILayout.Label("h ");
+                        GUI.SetNextControlName("periodMin");
+                        string m = GUILayout.TextField(OrbitCalc.periodMin, bm ? textStyle : textErrorStyle, GUILayout.MinWidth(25));
+                        GUILayout.Label("m ");
+                        GUI.SetNextControlName("periodSec");
+                        string s = GUILayout.TextField(OrbitCalc.periodSec, bs ? textStyle : textErrorStyle, GUILayout.MinWidth(25));
+                        GUILayout.Label("s");
+                        OrbitCalc.periodEntry = GUI.GetNameOfFocusedControl() == "periodHour" ||
+                            GUI.GetNameOfFocusedControl() == "periodMin" ||
+                            GUI.GetNameOfFocusedControl() == "periodSec";
+
+
+                        bh = Double.TryParse(h, out dh);
+                        bm = Double.TryParse(m, out dm);
+                        bs = Double.TryParse(s, out ds);
+                        if (h != OrbitCalc.periodHour || m != OrbitCalc.periodMin || s != OrbitCalc.periodSec)
+                        {
+                            if (bh && bm && bs)
+                            {
+                                double T = dh * 3600 + dm * 60 + ds;
+
+                                orbitAltitude = OrbitCalc.satelliteorbit.a(T);
+                                sOrbitAltitude = orbitAltitude.ToString("F0");
+                                draw = true;
+                            }
+                            OrbitCalc.periodHour = h;
+                            OrbitCalc.periodMin = m;
+                            OrbitCalc.periodSec = s;
+                        }
+                    }
+
+                    if (OrbitCalc.synchrorbit == "" || OrbitCalc.synchrorbit == "n/a")
+                        GUI.enabled = false;
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        if (GUILayout.Toggle(synchronousOrbit, new GUIContent("Synchronous orbit (" + OrbitCalc.synchrorbit + ")", "Set the altitude to have the satellites be in a geosynchronous orbit")))
+                        {
+                            selectedOrbit = SelectedOrbit.Synchronous;
+
+                            orbitAltitude = OrbitCalc.body.geoAlt;
+                            sOrbitAltitude = orbitAltitude.ToString();
+                            OrbitCalc.periodEntry = false;
+                            draw = true;
+                        }
+                    }
+                    GUI.enabled = true;
+                    GUILayout.Space(10);
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        if (OrbitCalc.losorbit == "" || OrbitCalc.losorbit == "n/a")
+                            GUI.enabled = false;
+
+                        if (GUILayout.Toggle(minLOSorbit, new GUIContent("Minimum LOS orbit (" + OrbitCalc.losorbit + ")", "Set the altitude to the minimum altitude possible to maintain a Line of Sight"),
+                            OrbitCalc.losOrbitWarning ? toggleMinLOSWarning : toggleMinLOSNormal))
+                        {
+                            selectedOrbit = SelectedOrbit.MinLOS;
+                            orbitAltitude = OrbitCalc.minLOS;
+                            sOrbitAltitude = orbitAltitude.ToString();
+                            OrbitCalc.periodEntry = false;
+                            draw = true;
+                        }
+                    }
+                    GUI.enabled = true;
+                    if (HighLogic.LoadedSceneIsFlight)
+                    {
+                        GUILayout.Space(10);
+                        bool warning = false;
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            warning = (FlightGlobals.activeTarget.orbit.ApA < FlightGlobals.ActiveVessel.mainBody.atmosphereDepth);
+
+                            if (GUILayout.Toggle(currentAp, new GUIContent("Current Ap (" + FlightGlobals.activeTarget.orbit.ApA.ToString("N0") + ")", "Set the altitude to the current vessel's Ap"),
+                                warning ? toggleMinLOSWarning : GUI.skin.toggle))
+                            {
+                                selectedOrbit = SelectedOrbit.Ap;
+                                orbitAltitude = Math.Round(FlightGlobals.activeTarget.orbit.ApA);
+                                sOrbitAltitude = orbitAltitude.ToString();
+                                OrbitCalc.periodEntry = false;
+                                draw = true;
+                            }
+                        }
+                        GUILayout.Space(10);
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            warning = (FlightGlobals.activeTarget.orbit.PeA < FlightGlobals.ActiveVessel.mainBody.atmosphereDepth);
+                            if (FlightGlobals.activeTarget.orbit.PeA < 1)
+                                GUI.enabled = false;
+                            if (GUILayout.Toggle(currentPe, new GUIContent("Current Pe (" + FlightGlobals.activeTarget.orbit.PeA.ToString("N0") + ")", "Set the altitude to the current vessel's Pe"),
+                                OrbitCalc.losOrbitWarning ? toggleMinLOSWarning : GUI.skin.toggle))
+                            {
+                                selectedOrbit = SelectedOrbit.Pe;
+                                orbitAltitude = Math.Round(FlightGlobals.activeTarget.orbit.PeA);
+                                sOrbitAltitude = orbitAltitude.ToString();
+                                OrbitCalc.periodEntry = false;
+                                draw = true;
+                            }
+                            GUI.enabled = true;
+                        }
+                    }
+
+                    GUILayout.Space(10);
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        bool newshowLOSlines = GUILayout.Toggle(showLOSlines, new GUIContent("Show LOS lines", "Show the Line Of Sight lines"));
+                        if (newshowLOSlines != showLOSlines)
+                        {
+                            draw = true;
+                            showLOSlines = newshowLOSlines;
+                        }
+                    }
+                    bool newocclusionModifiers;
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        newocclusionModifiers = GUILayout.Toggle(occlusionModifiers, new GUIContent("Occlusion modifiers", "Enable occlusion modifiers for vacuum and atmospheres"));
+                    }
+
+                    if (occlusionModifiers)
+                    {
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            GUILayout.Label(new GUIContent("   Atm:", "Occlusion atmospheric modifier"));
+                            var newsAtmOcclusion = GUILayout.TextField(sAtmOcclusion);
+                            if (GUILayout.Button(UpArrow, GUILayout.Width(butW)))
+                            {
+                                if (atmOcclusion < 1.1)
+                                    atmOcclusion += 0.01f;
+                                sAtmOcclusion = atmOcclusion.ToString("F2");
+                                newsAtmOcclusion = sAtmOcclusion;
+                                draw = true;
+                            }
+                            if (GUILayout.Button(DownArrow, GUILayout.Width(butW)))
+                            {
+                                if (atmOcclusion > 0)
+                                    atmOcclusion -= 0.01f;
+                                sAtmOcclusion = atmOcclusion.ToString("F2");
+                                newsAtmOcclusion = sAtmOcclusion;
+                                draw = true;
+                            }
+                            if (newsAtmOcclusion != sAtmOcclusion)
+                            {
+                                bValidAtmOcclusion = double.TryParse(newsAtmOcclusion, out dTmp);
+                                if (!bValidAtmOcclusion)
+                                    sAtmOcclusion = atmOcclusion.ToString("F2");
+                                else
+                                {
+                                    atmOcclusion = dTmp;
+                                    sAtmOcclusion = newsAtmOcclusion;
+                                    draw = true;
+                                }
+                            }
+                        }
+
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            GUILayout.Label(new GUIContent("   Vac:", "Occlusion vacuum modifier"));
+                            var newsVacOcclusion = GUILayout.TextField(sVacOcclusion);
+                            if (GUILayout.Button(UpArrow, GUILayout.Width(butW)))
+                            {
+                                if (vacOcclusion < 1.1)
+                                    vacOcclusion += 0.01f;
+                                sVacOcclusion = vacOcclusion.ToString("F2");
+                                newsVacOcclusion = sVacOcclusion;
+                                draw = true;
+                            }
+                            if (GUILayout.Button(DownArrow, GUILayout.Width(butW)))
+                            {
+                                if (vacOcclusion > 0)
+                                    vacOcclusion -= 0.01f;
+                                sVacOcclusion = vacOcclusion.ToString("F2");
+                                newsVacOcclusion = sVacOcclusion;
+                                draw = true;
+                            }
+                            if (newsVacOcclusion != sVacOcclusion)
+                            {
+                                bValidVacOcclusion = Double.TryParse(newsVacOcclusion, out dTmp);
+                                if (!bValidVacOcclusion)
+                                    sVacOcclusion = vacOcclusion.ToString("F2");
+                                else
+                                {
+                                    vacOcclusion = dTmp;
+                                    sVacOcclusion = newsVacOcclusion;
+                                    draw = true;
+                                }
+                            }
+                        }
+                    }
+                    if (occlusionModifiers != newocclusionModifiers)
                         draw = true;
-                    }
-                }
-                GUILayout.EndHorizontal();
-            }
-            if (occlusionModifiers != newocclusionModifiers)
-                draw = true;
-            occlusionModifiers = newocclusionModifiers;
+                    occlusionModifiers = newocclusionModifiers;
 
-            GUILayout.Space(15);
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Resonant Orbit", labelResonantOrbit);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            bool newflipOrbit = GUILayout.Toggle(flipOrbit, new GUIContent("Dive orbit", "Set Carrier orbit to be lower than target orbit"));
-            if (newflipOrbit != flipOrbit)
-            {
-                draw = true;
-                flipOrbit = newflipOrbit;
-            }
-            GUILayout.EndHorizontal();
-
-            if (draw)
-            {
-                UpdateGraph();
-            }
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Orbital Period: ");
-            GUILayout.Label(OrbitCalc.carrierT);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Apoapsis: ");
-            GUILayout.Label(OrbitCalc.carrierAp);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Periapsis: ");
-
-            if (OrbitCalc.carrierPe != "")
-                GUILayout.Label(OrbitCalc.carrierPe, OrbitCalc.carrierPeWarning ? warningLabel : normalLabel);
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Injection Δv: ");
-            GUILayout.Label(OrbitCalc.burnDV);
-            GUILayout.EndHorizontal();
-
-            Log.Info("LoadedSceneIsFlight: " + HighLogic.LoadedSceneIsFlight + ",    patchedConicsUnlocked: " + FlightGlobals.ActiveVessel.patchedConicsUnlocked());
-            if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel.patchedConicsUnlocked())
-            {
-                GUILayout.FlexibleSpace();
-                Log.Info("selectedOrbit: " + selectedOrbit);
-                if (selectedOrbit == SelectedOrbit.Ap)
-                {
-                    GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(new GUIContent("Create Maneuver Node at Ap", "Creates a maneuver node to put the current vessel into the resonant orbit")))
+                    GUILayout.Space(15);
+                    using (new GUILayout.HorizontalScope())
                     {
-                        Vector3d circularizeDv = VesselOrbitalCalc.CircularizeAtAP(FlightGlobals.ActiveVessel);
-                        // If a flip, then  subtract
-                        double UT = Planetarium.GetUniversalTime();
-                        UT += FlightGlobals.ActiveVessel.orbit.timeToAp;
-                        var o = FlightGlobals.ActiveVessel.orbit;
-                        if (flipOrbit)
-                            circularizeDv -= OrbitCalc.dBurnDV * o.Horizontal(UT);
-                        else
-                            circularizeDv += OrbitCalc.dBurnDV * o.Horizontal(UT);
-                        FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Clear();
-                        VesselOrbitalCalc.PlaceManeuverNode(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.orbit, circularizeDv, UT);
+                        GUILayout.Label("Resonant Orbit", labelResonantOrbit);
                     }
-                    GUILayout.EndHorizontal();
-                }
-                if (selectedOrbit == SelectedOrbit.Pe)
-                {
-                    if (OrbitCalc.carrierPeWarning)
-                        buttonStyle = buttonRed;
-                    else
-                        buttonStyle = GUI.skin.button;
-                    GUILayout.BeginHorizontal();
-                    if (GUILayout.Button(new GUIContent("Create Maneuver Node at Pe", "Creates a maneuver node to put the current vessel into the resonant orbit"), buttonStyle))
+
+                    using (new GUILayout.HorizontalScope())
                     {
-                        double UT = Planetarium.GetUniversalTime();
-                        UT += FlightGlobals.ActiveVessel.orbit.timeToPe;
-                        var o = FlightGlobals.ActiveVessel.orbit;
-                        Vector3d circularizeDv = VesselOrbitalCalc.CircularizeAtPE(FlightGlobals.ActiveVessel);
-                        // If a flip, then  subtract 
-                        if (flipOrbit)
-                            circularizeDv -= OrbitCalc.dBurnDV * o.Horizontal(UT);
-                        else
-                            circularizeDv += OrbitCalc.dBurnDV * o.Horizontal(UT);
-                        FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Clear();
-                        VesselOrbitalCalc.PlaceManeuverNode(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.orbit, circularizeDv, UT);
-                    }
-                    GUILayout.EndHorizontal();
-                }
-                Log.Info("FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count(): " + FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count());
-                if (FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count() > 0)
-                {
-                    GUILayout.BeginHorizontal();
-                    if (GUILayout.Button("Clear all nodes"))
-                    {
-                        for (int i = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count - 1; i >= 0; i--)
+                        bool newflipOrbit = GUILayout.Toggle(flipOrbit, new GUIContent("Dive orbit", "Set Carrier orbit to be lower than target orbit"));
+                        if (newflipOrbit != flipOrbit)
                         {
-                            FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[i].RemoveSelf();
+                            draw = true;
+                            flipOrbit = newflipOrbit;
                         }
                     }
-                    GUILayout.EndHorizontal();
 
-                    if (selectedOrbit == SelectedOrbit.Ap || selectedOrbit == SelectedOrbit.Pe)
+                    if (draw)
                     {
-                        if (KACWrapper.APIReady)
+                        UpdateGraph();
+                    }
+
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Label("Orbital Period: ");
+                        GUILayout.Label(OrbitCalc.carrierT);
+                    }
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Label("Apoapsis: ");
+                        GUILayout.Label(OrbitCalc.carrierAp);
+                    }
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Label("Periapsis: ");
+                        if (OrbitCalc.carrierPe != "")
+                            GUILayout.Label(OrbitCalc.carrierPe, OrbitCalc.carrierPeWarning ? warningLabel : normalLabel);
+                    }
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Label("Injection Δv: ");
+                        GUILayout.Label(OrbitCalc.burnDV);
+                    }
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        GUILayout.Label("LOS Length: ");
+                        GUILayout.Label(OrbitCalc.actualLOSlength);
+                    }
+                    Log.Info("LoadedSceneIsFlight: " + HighLogic.LoadedSceneIsFlight + ",    patchedConicsUnlocked: " + FlightGlobals.ActiveVessel.patchedConicsUnlocked());
+                    if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel.patchedConicsUnlocked())
+                    {
+                        GUILayout.FlexibleSpace();
+                        Log.Info("selectedOrbit: " + selectedOrbit);
+                        if (selectedOrbit == SelectedOrbit.Ap)
                         {
-                            GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("Add alarms to KAC"))
+                            using (new GUILayout.HorizontalScope())
                             {
-                                double timeToOrbit = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].UT;
-                                double period = OrbitCalc.satelliteorbit.T;
-                                String aID;
-                                if (!ResonantOrbitCalculator.Instance.mucore.Available)
+                                if (GUILayout.Button(new GUIContent("Create Maneuver Node at Ap", "Creates a maneuver node to put the current vessel into the resonant orbit")))
                                 {
-                                    aID = KACWrapper.KAC.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.Maneuver, "Orbital Maneuver", timeToOrbit - 60);
-                                    KACWrapper.KAC.Alarms.First(z => z.ID == aID).Notes = "Put carrier craft into resonant orbit";
-                                    KACWrapper.KAC.Alarms.First(z => z.ID == aID).AlarmMargin = 60;
-                                }
-
-                                period = OrbitCalc.carrierorbit.T;
-
-                                timeToOrbit += period;
-                                for (int i = 0; i < numSats; i++)
-                                {
-                                    aID = KACWrapper.KAC.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.Raw, "Detachment # " + (i + 1).ToString(), timeToOrbit - 60);
-
-                                    KACWrapper.KAC.Alarms.First(z => z.ID == aID).Notes = "Detach satellite # " + (i + 1) + " and circularize its orbit";
-                                    KACWrapper.KAC.Alarms.First(z => z.ID == aID).AlarmMargin = 60;
-                                    timeToOrbit += period;
+                                    Vector3d circularizeDv = VesselOrbitalCalc.CircularizeAtAP(FlightGlobals.ActiveVessel);
+                                    // If a flip, then  subtract
+                                    double UT = Planetarium.GetUniversalTime();
+                                    UT += FlightGlobals.ActiveVessel.orbit.timeToAp;
+                                    var o = FlightGlobals.ActiveVessel.orbit;
+                                    if (flipOrbit)
+                                        circularizeDv -= OrbitCalc.dBurnDV * o.Horizontal(UT);
+                                    else
+                                        circularizeDv += OrbitCalc.dBurnDV * o.Horizontal(UT);
+                                    FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Clear();
+                                    VesselOrbitalCalc.PlaceManeuverNode(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.orbit, circularizeDv, UT);
                                 }
                             }
-                            GUILayout.EndHorizontal();
                         }
-
-                        if (ResonantOrbitCalculator.Instance.mucore.Available)
+                        if (selectedOrbit == SelectedOrbit.Pe)
                         {
-                            GUILayout.BeginHorizontal();
-                            if (GUILayout.Button("Execute maneuver"))
+                            if (OrbitCalc.carrierPeWarning)
+                                buttonStyle = buttonRed;
+                            else
+                                buttonStyle = GUI.skin.button;
+                            using (new GUILayout.HorizontalScope())
                             {
-                                ResonantOrbitCalculator.Instance.mucore.ExecuteNode();
+                                if (GUILayout.Button(new GUIContent("Create Maneuver Node at Pe", "Creates a maneuver node to put the current vessel into the resonant orbit"), buttonStyle))
+                                {
+                                    double UT = Planetarium.GetUniversalTime();
+                                    UT += FlightGlobals.ActiveVessel.orbit.timeToPe;
+                                    var o = FlightGlobals.ActiveVessel.orbit;
+                                    Vector3d circularizeDv = VesselOrbitalCalc.CircularizeAtPE(FlightGlobals.ActiveVessel);
+                                    // If a flip, then  subtract 
+                                    if (flipOrbit)
+                                        circularizeDv -= OrbitCalc.dBurnDV * o.Horizontal(UT);
+                                    else
+                                        circularizeDv += OrbitCalc.dBurnDV * o.Horizontal(UT);
+                                    FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Clear();
+                                    VesselOrbitalCalc.PlaceManeuverNode(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.orbit, circularizeDv, UT);
+                                }
                             }
-                            GUILayout.EndHorizontal();
+                        }
+                        Log.Info("FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count(): " + FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count());
+                        if (FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count() > 0)
+                        {
+                            using (new GUILayout.HorizontalScope())
+                            {
+                                if (GUILayout.Button("Clear all nodes"))
+                                {
+                                    for (int i = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count - 1; i >= 0; i--)
+                                    {
+                                        FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[i].RemoveSelf();
+                                    }
+                                }
+                            }
+
+                            if (selectedOrbit == SelectedOrbit.Ap || selectedOrbit == SelectedOrbit.Pe)
+                            {
+                                if (KACWrapper.APIReady)
+                                {
+                                    using (new GUILayout.HorizontalScope())
+                                    {
+                                        if (GUILayout.Button("Add alarms to KAC"))
+                                        {
+                                            double timeToOrbit = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].UT;
+                                            double period = OrbitCalc.satelliteorbit.T;
+                                            String aID;
+                                            if (!ResonantOrbitCalculator.Instance.mucore.Available)
+                                            {
+                                                aID = KACWrapper.KAC.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.Maneuver, "Orbital Maneuver", timeToOrbit - 60);
+                                                KACWrapper.KAC.Alarms.First(z => z.ID == aID).Notes = "Put carrier craft into resonant orbit";
+                                                KACWrapper.KAC.Alarms.First(z => z.ID == aID).AlarmMargin = 60;
+                                            }
+
+                                            period = OrbitCalc.carrierorbit.T;
+
+                                            timeToOrbit += period;
+                                            for (int i = 0; i < numSats; i++)
+                                            {
+                                                aID = KACWrapper.KAC.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.Raw, "Detachment # " + (i + 1).ToString(), timeToOrbit - 60);
+
+                                                KACWrapper.KAC.Alarms.First(z => z.ID == aID).Notes = "Detach satellite # " + (i + 1) + " and circularize its orbit";
+                                                KACWrapper.KAC.Alarms.First(z => z.ID == aID).AlarmMargin = 60;
+                                                timeToOrbit += period;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (ResonantOrbitCalculator.Instance.mucore.Available)
+                                {
+                                    using (new GUILayout.HorizontalScope())
+                                    {
+                                        if (GUILayout.Button("Execute maneuver"))
+                                        {
+                                            ResonantOrbitCalculator.Instance.mucore.ExecuteNode();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    GUILayout.FlexibleSpace();
+
+                    using (new GUILayout.HorizontalScope())
+                    {
+                        if (GUILayout.Button(new GUIContent("Save Window", "Saves an image of the window to the Screenshots directory")))
+                        {
+                            saveScreen = true;
                         }
                     }
                 }
             }
-            GUILayout.FlexibleSpace();
-
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button(new GUIContent("Save Window", "Saves an image of the window to the Screenshots directory")))
-            {
-                saveScreen = true;
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
             if (Event.current.type == EventType.Repaint && GUI.tooltip != tooltip)
                 tooltip = GUI.tooltip;
 

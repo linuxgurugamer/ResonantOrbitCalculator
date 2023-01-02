@@ -10,5 +10,17 @@ namespace ResonantOrbitCalculator
         {
             ToolbarControl.RegisterMod(ResonantOrbitCalculator.MODID, ResonantOrbitCalculator.MODNAME);
         }
+
+        bool init_gui = false;
+        public void OnGUI()
+        {
+            if (!init_gui)
+            {
+                init_gui = true;
+                GraphWindow.InitGuiStyles();
+            }
+
+
+        }
     }
 }

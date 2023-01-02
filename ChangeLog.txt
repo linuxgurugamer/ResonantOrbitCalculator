@@ -1,5 +1,14 @@
 ﻿ChangeLog
 
+0.0.7 
+	Added LOS length calculation and display
+	Fixed bug with up/down arrows not being displaed after 2nd display
+	Replaced all GUILayout.BeginHorizontal() and GUILayout.BeginVertical() with the "using (new GUILayout.HorizontalScope())" and "using (new GUILayout.VerticalScope())"
+	Small optimization by moving init of GUIStyles into ToolbarRegistration
+	Added buttons to select units display
+		m, km, Mm, Gm
+
+
 0.0.6.2
 	Added informative text to explain how to use with KAC when KAC is available
 

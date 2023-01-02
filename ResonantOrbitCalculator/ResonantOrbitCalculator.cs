@@ -34,8 +34,8 @@ namespace ResonantOrbitCalculator
 
         static Texture2D upArrow = null;
         static Texture2D downArrow = null;
-        internal GUIContent upContent;
-        internal GUIContent downContent;
+        internal static GUIContent upContent;
+        internal static GUIContent downContent;
 
         void Start()
         {

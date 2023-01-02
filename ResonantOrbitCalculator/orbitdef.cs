@@ -15,7 +15,7 @@ namespace ResonantOrbitCalculator
     {
         public double Ap;
         public double Pe;
-        bodydef body;
+        internal bodydef body;
 
         const double G = 6.67384e-11;
         const double oneThird = 1f / 3f;

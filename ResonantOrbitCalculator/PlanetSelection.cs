@@ -120,10 +120,11 @@ namespace ResonantOrbitCalculator
 
         void planetSelWin(int id)
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Selected planet:");
-            GUILayout.TextField(selectedBody.name);
-            GUILayout.EndHorizontal();
+            using (new GUILayout.HorizontalScope())
+            {
+                GUILayout.Label("Selected planet:");
+                GUILayout.TextField(selectedBody.name);
+            }
             bodiesScrollPosition = GUILayout.BeginScrollView(bodiesScrollPosition);
             foreach (CelestialBody body in bodiesList)
             {
