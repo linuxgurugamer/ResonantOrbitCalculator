@@ -721,7 +721,8 @@ namespace ResonantOrbitCalculator
                     }
                 }
             }
-            if (Event.current.type == EventType.Repaint && GUI.tooltip != tooltip)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().tooltips && 
+                Event.current.type == EventType.Repaint && GUI.tooltip != tooltip)
                 tooltip = GUI.tooltip;
 
             GUI.DragWindow();
