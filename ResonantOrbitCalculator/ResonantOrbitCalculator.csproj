@@ -47,6 +47,8 @@
     <Compile Include="Libraries\KACWrapper.cs" />
     <Compile Include="Libraries\TextureScale.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Loc.cs" />
+    <Compile Include="UIScale.cs" />
     <Compile Include="Libraries\MechjebWrapper.cs" />
     <Compile Include="Libraries\VesselOrbitalCalc.cs" />
     <Compile Include="OrbitCalc.cs" />

@@ -15,6 +15,7 @@ namespace ResonantOrbitCalculator
 
         List<CelestialBody> bodiesList = null;
         public static bool isActive = false;
+        bool needsLayoutRecalc = true;
         const int wnd_width = 200;
         const int wnd_height = GraphWindow.wnd_height;
         Rect planetWin = new Rect(100.0f, 100.0f, wnd_width, wnd_height);
@@ -86,43 +87,46 @@ namespace ResonantOrbitCalculator
             bodiesList = getAllowableBodies();
             isActive = true;
             GUI.color = new Color(0.85f, 0.85f, 0.85f, 1);
-
-            winStyle = new GUIStyle(HighLogic.Skin.window);
-            winStyle.active.background = winStyle.normal.background;
-            Texture2D tex = winStyle.normal.background; //.CreateReadable();
-
-            var pixels = tex.GetPixels32();
-            for (int i = 0; i < pixels.Length; ++i)
-                pixels[i].a = 255;
-
-            tex.SetPixels32(pixels);
-            tex.Apply();
-
-            winStyle.active.background = tex;
-            winStyle.focused.background = tex;
-            winStyle.normal.background = tex;
-
+            winStyle = GraphWindow.CreateWindowStyle(HighLogic.Skin);
+            needsLayoutRecalc = true;
             loadBodyImage(selectedBody.name);
         }
 
         void OnDestroy()
         {
             isActive = false;
+            if (ResonantOrbitCalculator.Instance != null
+                && ResonantOrbitCalculator.Instance.graphWindow != null
+                && ResonantOrbitCalculator.Instance.graphWindow.planetSelection == this)
+            {
+                ResonantOrbitCalculator.Instance.graphWindow.planetSelection = null;
+            }
         }
 
         public void OnGUI()
         {
-            planetWin.height = GraphWindow.wnd_rect.height;
             planetWin.x = GraphWindow.wnd_rect.x + GraphWindow.wnd_rect.width;
             planetWin.y = GraphWindow.wnd_rect.y;
-            ClickThruBlocker.GUILayoutWindow(565949, planetWin, planetSelWin, "Planetary Body Selection", winStyle);
+            if (needsLayoutRecalc && Event.current.type == EventType.Layout)
+            {
+                planetWin.height = 0;
+                needsLayoutRecalc = false;
+            }
+            else
+                planetWin.height = GraphWindow.wnd_rect.height;
+            bool useAlternateSkin = HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().useAlternateSkin;
+            GUI.skin = GraphWindow.GetGuiSkin(useAlternateSkin);
+            GraphWindow.EnsureGuiStyles(useAlternateSkin);
+            UIScale.BeginGUI();
+            ClickThruBlocker.GUILayoutWindow(565949, planetWin, planetSelWin, Loc.T("PlanetSelectionTitle", "Planetary Body Selection"), winStyle);
+            UIScale.EndGUI();
         }
 
         void planetSelWin(int id)
         {
             using (new GUILayout.HorizontalScope())
             {
-                GUILayout.Label("Selected planet:");
+                GUILayout.Label(Loc.T("SelectedPlanet", "Selected planet:"));
                 GUILayout.TextField(selectedBody.name);
             }
             bodiesScrollPosition = GUILayout.BeginScrollView(bodiesScrollPosition);
@@ -137,13 +141,12 @@ namespace ResonantOrbitCalculator
                     if (ResonantOrbitCalculator.Instance.graphWindow.shown)
                     {
                         loadBodyImage(selectedBody.name);
-
-                        ResonantOrbitCalculator.Instance.graphWindow.UpdateGraph();
+                        ResonantOrbitCalculator.Instance.graphWindow.RequestGraphUpdate();
                     }
                 }
             }
             GUILayout.EndScrollView();
-            if (GUILayout.Button("Close"))
+            if (GUILayout.Button(Loc.T("Close", "Close")))
             {
                 Destroy(this);
             }

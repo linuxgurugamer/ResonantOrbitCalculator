@@ -17,8 +17,7 @@ namespace ResonantOrbitCalculator
         public double Pe;
         internal bodydef body;
 
-        const double G = 6.67384e-11;
-        const double oneThird = 1f / 3f;
+        const double oneThird = 1.0 / 3.0;
 
         public orbitdef(double Ap, double Pe, bodydef body)
         {
@@ -45,9 +44,8 @@ namespace ResonantOrbitCalculator
         public double op { get { return this.T / 3600; } }
         public double a(double T)
         {
-                double mu = G * body.body.Mass;
-                double sma = Math.Pow(Math.Pow(T / (2 * Math.PI), 2) * mu , oneThird);
-                return sma - body.body.Radius;
+            double sma = Math.Pow(Math.Pow(T / (2.0 * Math.PI), 2.0) * GM, oneThird);
+            return sma - body.body.Radius;
         }
         public string oph
         {
