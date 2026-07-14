@@ -12,10 +12,10 @@ namespace ResonantOrbitCalculator
         public override int SectionOrder { get { return 1; } }
         public override bool HasPresets { get { return false; } }
 
-        [GameParameters.CustomParameterUI("#LOC_ROC_ShowPlanetImage")]
+        [GameParameters.CustomParameterUI("#LOC_ROC_ShowPlanetImage", toolTip = "#LOC_ROC_ShowPlanetImageTip")]
         public bool showPlanetImage = true;
 
-        [GameParameters.CustomParameterUI("#LOC_ROC_Tooltips")]
+        [GameParameters.CustomParameterUI("#LOC_ROC_Tooltips", toolTip = "#LOC_ROC_TooltipsTip")]
         public bool tooltips = true;
 
         [GameParameters.CustomParameterUI("#LOC_ROC_UseAlternateSkin")]
@@ -27,10 +27,10 @@ namespace ResonantOrbitCalculator
         [GameParameters.CustomParameterUI("#LOC_ROC_UseLastPlanet")]
         public bool useLastPlanet = true;
 
-        [GameParameters.CustomParameterUI("#LOC_ROC_EditorSoiWhite")]
+        [GameParameters.CustomParameterUI("#LOC_ROC_EditorSoiWhite", toolTip = "#LOC_ROC_EditorSoiWhiteTip")]
         public bool editorSOIWhite = true;
 
-        [GameParameters.CustomParameterUI("#LOC_ROC_FlightSoiWhite")]
+        [GameParameters.CustomParameterUI("#LOC_ROC_FlightSoiWhite", toolTip = "#LOC_ROC_FlightSoiWhiteTip")]
         public bool flightSOIWhite = false;
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)

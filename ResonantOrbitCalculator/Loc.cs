@@ -24,5 +24,11 @@ namespace ResonantOrbitCalculator
         }
 
         public static GUIContent Label(string key, string text) => new GUIContent(T(key, text));
+
+        public static GUIContent Label(string key, string text, string tipKey, string tip)
+            => new GUIContent(T(key, text), T(tipKey, tip));
+
+        public static GUIContent Content(string text, string tipKey, string tip)
+            => new GUIContent(text, T(tipKey, tip));
     }
 }
