@@ -1,5 +1,9 @@
 ﻿ChangeLog
 
+0.0.8
+	Thanks to github user @Aebestach for this:
+		fixes for localization and conversion.
+
 0.0.7.1
 	Fixed the tooltip window always being shown even when tooltips were disabled
 	Updated version file to use github for new version info
