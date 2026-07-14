@@ -3,43 +3,34 @@ using System.Reflection;
 
 namespace ResonantOrbitCalculator
 {
-
-    // http://forum.kerbalspaceprogram.com/index.php?/topic/147576-modders-notes-for-ksp-12/#comment-2754813
-    // search for "Mod integration into Stock Settings
-
     public class ROCParams : GameParameters.CustomParameterNode
     {
-        public override string Title { get { return "Resonant Orbit Calculator"; } }
+        public override string Title { get { return Loc.Tag("ModName"); } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
-        public override string Section { get { return "Resonant Orbit Calculator"; } }
-        public override string DisplaySection { get { return "Resonant Orbit Calculator"; } }
+        public override string Section { get { return Loc.Tag("ModName"); } }
+        public override string DisplaySection { get { return Loc.Tag("ModName"); } }
         public override int SectionOrder { get { return 1; } }
         public override bool HasPresets { get { return false; } }
 
-
-        [GameParameters.CustomParameterUI("Show planet image",
-            toolTip = "Show an image of the planet at the center")]
+        [GameParameters.CustomParameterUI("#LOC_ROC_ShowPlanetImage", toolTip = "#LOC_ROC_ShowPlanetImageTip")]
         public bool showPlanetImage = true;
 
-        [GameParameters.CustomParameterUI("Tooltips",
-            toolTip = "Show tooltips")]
+        [GameParameters.CustomParameterUI("#LOC_ROC_Tooltips", toolTip = "#LOC_ROC_TooltipsTip")]
         public bool tooltips = true;
 
-        [GameParameters.CustomParameterUI("Use alternate skin")]
+        [GameParameters.CustomParameterUI("#LOC_ROC_UseAlternateSkin")]
         public bool useAlternateSkin = false;
 
-        [GameParameters.CustomParameterUI("Hide UI when paused")]
+        [GameParameters.CustomParameterUI("#LOC_ROC_HideWhenPaused")]
         public bool hideWhenPaused = false;
 
-        [GameParameters.CustomParameterUI("Use last selected planet")]
+        [GameParameters.CustomParameterUI("#LOC_ROC_UseLastPlanet")]
         public bool useLastPlanet = true;
 
-        [GameParameters.CustomParameterUI("Editor SOI white",
-            toolTip = "If false, the background in the editor will be a dark grey")]
+        [GameParameters.CustomParameterUI("#LOC_ROC_EditorSoiWhite", toolTip = "#LOC_ROC_EditorSoiWhiteTip")]
         public bool editorSOIWhite = true;
 
-        [GameParameters.CustomParameterUI("Flight SOI white",
-            toolTip = "If false, the background in flight will be dark grey")]
+        [GameParameters.CustomParameterUI("#LOC_ROC_FlightSoiWhite", toolTip = "#LOC_ROC_FlightSoiWhiteTip")]
         public bool flightSOIWhite = false;
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)
@@ -54,5 +45,4 @@ namespace ResonantOrbitCalculator
             return null;
         }
     }
-
 }

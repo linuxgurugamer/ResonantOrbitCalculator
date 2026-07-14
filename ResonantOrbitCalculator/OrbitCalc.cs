@@ -6,12 +6,12 @@ namespace ResonantOrbitCalculator
     {
         static public double Cbrt(double d)
         {
-            return Math.Pow(d, 1.0f / 3.0f);
+            return Math.Pow(d, 1.0 / 3.0);
         }
 
         static public double newMAfromT(double T, bodydef body)
         {
-            return 2 * Cbrt((body.GM * Math.Pow(T, 2f)) / 39.4784176);  // 39.4784176 = 4π^2
+            return 2 * Cbrt((body.GM * Math.Pow(T, 2.0)) / 39.4784176);  // 39.4784176 = 4π^2
         }
 
 
@@ -51,6 +51,8 @@ namespace ResonantOrbitCalculator
         }
 
         public static bool disabled = false;
+        public static bool hasSyncOrbit = false;
+        public static bool hasLosOrbit = false;
         public static string synchrorbit = "";
         public static string losorbit = "";
         public static bool losOrbitWarning = false;
@@ -85,13 +87,13 @@ namespace ResonantOrbitCalculator
             switch (units)
             {
                 case Units.m:
-                    return v.ToString(format) + " m";
+                    return v.ToString(format) + " " + Loc.T("UnitM", "m");
                 case Units.km:
-                    return (v / 1000).ToString(format) + " km";
+                    return (v / 1000).ToString(format) + " " + Loc.T("UnitKm", "km");
                 case Units.Mm:
-                    return (v / 1000000).ToString(format) + " Mm";
+                    return (v / 1000000).ToString(format) + " " + Loc.T("UnitMm", "Mm");
                 default:
-                    return (v / 1000000000).ToString(format) + " Gm";
+                    return (v / 1000000000).ToString(format) + " " + Loc.T("UnitGm", "Gm");
             }
         }
         public static void Update()
@@ -107,18 +109,19 @@ namespace ResonantOrbitCalculator
             }
             if (body.geoAlt > 0 && body.geoSMA < body.SOI)
             {
-                //synchrorbit = body.geoAlt.ToString("N") + " m";
+                hasSyncOrbit = true;
                 synchrorbit = GetFormattedDistance(body.geoAlt, "N");
             }
             else
             {
-                synchrorbit = "n/a";
+                hasSyncOrbit = false;
+                synchrorbit = Loc.T("NA", "n/a");
             }
 
             minLOS = minLOSCalc(body);
             if (minLOS < body.SOIAlt() && minLOS > 0)
             {
-                //losorbit = minLOS.ToString("N") + " m";
+                hasLosOrbit = true;
                 losorbit = GetFormattedDistance(minLOS,"N");
                 losOrbitWarning = (minLOS < body.atm);
 
@@ -126,7 +129,8 @@ namespace ResonantOrbitCalculator
             }
             else
             {
-                losorbit = "n/a";
+                hasLosOrbit = false;
+                losorbit = Loc.T("NA", "n/a");
             }
 
 
@@ -170,7 +174,7 @@ namespace ResonantOrbitCalculator
                 carrierT = carrierorbit.oph;
 
                 dBurnDV = burnCalc(satelliteorbit, carrierorbit, body);
-                burnDV = dBurnDV.ToString("N2") + " m/s";
+                burnDV = dBurnDV.ToString("N2") + " " + Loc.T("UnitMs", "m/s");
 
                 // actualLOSlength = (2 * (satelliteorbit.a(satelliteorbit.T) + satelliteorbit.body.body.Radius) * Math.Sin(Math.PI / satcount)).ToString("N1");
                 actualLOSlength = GetFormattedDistance(2 * (satelliteorbit.a(satelliteorbit.T) + satelliteorbit.body.body.Radius) * Math.Sin(Math.PI / satcount),"N1");
@@ -185,11 +189,8 @@ namespace ResonantOrbitCalculator
             else
             {
                 string s = body.body.displayName.Substring(0, body.body.displayName.Length - 2);
-                header[0] = s;
-                header[0] += " " + satcount + "-satellite constellation";
-                header[1] = "Ap " + carrierAp;
-                header[1] += "     Pe " + carrierPe;
-                header[1] += "     Δv " + burnDV;
+                header[0] = Loc.F("ConstellationHeader", "<<1>> <<2>>-satellite constellation", s, satcount);
+                header[1] = Loc.F("HeaderLine", "Ap <<1>>     Pe <<2>>     Δv <<3>>", carrierAp, carrierPe, burnDV);
             }
 
         }

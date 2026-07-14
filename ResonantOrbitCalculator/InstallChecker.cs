@@ -43,6 +43,7 @@ namespace ResonantOrbitCalculator
         internal const string MODNAME = "Resonant Orbit Calculator";
         internal const string FOLDERNAME = "ResonantOrbitCalculator";
         internal const string EXPECTEDPATH = FOLDERNAME + "/Plugins";
+        internal static string LocalizedModName { get { return Loc.T("ModName", MODNAME); } }
 
         protected void Start()
         {
@@ -56,9 +57,9 @@ namespace ResonantOrbitCalculator
                     new Vector2(0.5f, 0.5f),
                     new Vector2(0.5f, 0.5f),
                     "test",
-                    "Incorrect " + MODNAME + " Installation",
-                    MODNAME + " has been installed incorrectly and will not function properly. All files should be located in KSP/GameData/" + FOLDERNAME + ". Do not move any files from inside that folder.\n\nIncorrect path(s):\n" + String.Join("\n", badPaths.ToArray()),
-                    "OK",
+                    Loc.F("InstallTitle", "Incorrect <<1>> Installation", LocalizedModName),
+                    Loc.F("InstallBody", "<<1>> has been installed incorrectly and will not function properly. All files should be located in KSP/GameData/<<2>>. Do not move any files from inside that folder.\n\nIncorrect path(s):\n<<3>>", LocalizedModName, FOLDERNAME, String.Join("\n", badPaths.ToArray())),
+                    Loc.T("OK", "OK"),
                     false,
                     HighLogic.UISkin
                 );

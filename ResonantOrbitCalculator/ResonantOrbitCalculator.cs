@@ -60,17 +60,17 @@ namespace ResonantOrbitCalculator
             {
                 upArrow = new Texture2D(2, 2);
                 if (ToolbarControl.LoadImageFromFile(ref upArrow, KSPUtil.ApplicationRootPath + "GameData/ResonantOrbitCalculator/PluginData/Images/up"))
-                    upContent = new GUIContent("", upArrow, "");
+                    upContent = new GUIContent("", upArrow);
                 else
-                    upContent = new GUIContent("^", null, "");
+                    upContent = new GUIContent("^");
             }
             if (downArrow == null)
             {
                 downArrow = new Texture2D(2, 2);
                 if (ToolbarControl.LoadImageFromFile(ref downArrow, KSPUtil.ApplicationRootPath + "GameData/ResonantOrbitCalculator/PluginData/Images/down"))
-                    downContent = new GUIContent("", downArrow, "");
+                    downContent = new GUIContent("", downArrow);
                 else
-                    downContent = new GUIContent("v", null, "");
+                    downContent = new GUIContent("v");
             }
 
         }
@@ -121,6 +121,7 @@ namespace ResonantOrbitCalculator
         static ToolbarControl toolbarControl = null;
         internal const string MODID = "ResonantOrbitCalculator_NS";
         internal const string MODNAME = "Resonant Orbit Calculator";
+        internal static string LocalizedModName { get { return Loc.T("ModName", MODNAME); } }
 
         void onAppLauncherLoad()
         {
@@ -137,7 +138,7 @@ namespace ResonantOrbitCalculator
                 "ResonantOrbitCalculatorButton",
                 "ResonantOrbitCalculator/PluginData/Images/ResonantOrbit_38",
                 "ResonantOrbitCalculator/PluginData/Images/ResonantOrbit_24",
-                MODNAME
+                LocalizedModName
             );
 
         }

@@ -115,14 +115,14 @@ namespace ResonantOrbitCalculator
             planetWin.height = GraphWindow.wnd_rect.height;
             planetWin.x = GraphWindow.wnd_rect.x + GraphWindow.wnd_rect.width;
             planetWin.y = GraphWindow.wnd_rect.y;
-            ClickThruBlocker.GUILayoutWindow(565949, planetWin, planetSelWin, "Planetary Body Selection", winStyle);
+            ClickThruBlocker.GUILayoutWindow(565949, planetWin, planetSelWin, Loc.T("PlanetSelectionTitle", "Planetary Body Selection"), winStyle);
         }
 
         void planetSelWin(int id)
         {
             using (new GUILayout.HorizontalScope())
             {
-                GUILayout.Label("Selected planet:");
+                GUILayout.Label(Loc.T("SelectedPlanet", "Selected planet:"));
                 GUILayout.TextField(selectedBody.name);
             }
             bodiesScrollPosition = GUILayout.BeginScrollView(bodiesScrollPosition);
@@ -143,7 +143,7 @@ namespace ResonantOrbitCalculator
                 }
             }
             GUILayout.EndScrollView();
-            if (GUILayout.Button("Close"))
+            if (GUILayout.Button(Loc.T("Close", "Close")))
             {
                 Destroy(this);
             }
