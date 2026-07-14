@@ -15,6 +15,9 @@ namespace ResonantOrbitCalculator
         [GameParameters.CustomParameterUI("#LOC_ROC_ShowPlanetImage")]
         public bool showPlanetImage = true;
 
+        [GameParameters.CustomParameterUI("#LOC_ROC_Tooltips")]
+        public bool tooltips = true;
+
         [GameParameters.CustomParameterUI("#LOC_ROC_UseAlternateSkin")]
         public bool useAlternateSkin = false;
 
