@@ -12,6 +12,9 @@ namespace ResonantOrbitCalculator
         public override int SectionOrder { get { return 1; } }
         public override bool HasPresets { get { return false; } }
 
+        [GameParameters.CustomParameterUI("#LOC_ROC_UseModernUI", toolTip = "#LOC_ROC_UseModernUI_Tooltip")]
+        public bool useModernUI = false;
+
         [GameParameters.CustomParameterUI("#LOC_ROC_ShowPlanetImage", toolTip = "#LOC_ROC_ShowPlanetImageTip")]
         public bool showPlanetImage = true;
 
@@ -38,6 +41,8 @@ namespace ResonantOrbitCalculator
 
         public override bool Interactible(MemberInfo member, GameParameters parameters)
         {
+            if (member.Name == "tooltips")
+                return !useModernUI;
             return true;
         }
         public override IList ValidValues(MemberInfo member)

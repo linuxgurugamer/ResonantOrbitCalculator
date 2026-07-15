@@ -22,7 +22,7 @@ using ClickThroughFix;
 
 namespace ResonantOrbitCalculator
 {
-    public class GraphWindow
+    public partial class GraphWindow
     {
         public const int wnd_width = 650;
         public const int wnd_height = 500;
@@ -57,20 +57,7 @@ namespace ResonantOrbitCalculator
             PlanetSelection.setSelectedBody(ResonantOrbitCalculator_Persistent.Instance.lastSelectedPlanet);
             GUI.color = new Color(0.85f, 0.85f, 0.85f, 1);
 
-            winStyle = new GUIStyle(HighLogic.Skin.window);
-            winStyle.active.background = winStyle.normal.background;
-            Texture2D tex = winStyle.normal.background; //.CreateReadable();
-
-            var pixels = tex.GetPixels32();
-            for (int i = 0; i < pixels.Length; ++i)
-                pixels[i].a = 255;
-
-            tex.SetPixels32(pixels);
-            tex.Apply();
-
-            winStyle.active.background = tex;
-            winStyle.focused.background = tex;
-            winStyle.normal.background = tex;
+            winStyle = CreateWindowStyle(HighLogic.Skin);
         }
 
 
@@ -141,22 +128,62 @@ namespace ResonantOrbitCalculator
             textErrorStyle.focused.textColor = Color.red;
 
         }
+        bool? lastModernUI;
+
+        internal static bool UseModernUI
+        {
+            get
+            {
+                return HighLogic.CurrentGame != null
+                    && HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().useModernUI;
+            }
+        }
+
         public void OnGUI()
         {
             EditorLogic editorlogic = EditorLogic.fetch;
-            if (shown)
+            if (!shown)
+                return;
+
+            bool modern = UseModernUI;
+            if (lastModernUI != modern)
             {
-                if (!HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().useAlternateSkin)
+                lastModernUI = modern;
+                needsLayoutRecalc = true;
+                stylesForAlternateSkin = null;
+                wnd_rect.width = modern ? MODERN_WND_WIDTH : wnd_width;
+            }
+
+            bool useAlternateSkin = HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().useAlternateSkin;
+            if (modern)
+            {
+                GUI.skin = GetGuiSkin(useAlternateSkin);
+                EnsureGuiStyles(useAlternateSkin);
+                UIScale.BeginGUI();
+                try
+                {
+                    wnd_rect = ClickThruBlocker.GUILayoutWindow(54665949, wnd_rect, _drawModernGUI, Loc.T("ModName", "Resonant Orbit Calculator"), winStyle);
+                    ProcessPendingUpdates();
+                }
+                finally
+                {
+                    UIScale.EndGUI();
+                }
+            }
+            else
+            {
+                if (!useAlternateSkin)
                     GUI.skin = HighLogic.Skin;
-                if (drawTooltip /* && HighLogic.CurrentGame.Parameters.CustomParams<JanitorsClosetSettings>().buttonTooltip*/ && tooltip != null && tooltip.Trim().Length > 0)
+                else
+                    GUI.skin = GetGuiSkin(true);
+                InitGuiStyles();
+                if (drawTooltip && tooltip != null && tooltip.Trim().Length > 0)
                 {
                     SetupTooltip();
                     ClickThruBlocker.GUIWindow(1234, tooltipRect, TooltipWindow, "");
                 }
-
-                wnd_rect = ClickThruBlocker.GUILayoutWindow(54665949, wnd_rect, _drawGUI, Loc.T("ModName", "Resonant Orbit Calculator"), winStyle);
+                wnd_rect = ClickThruBlocker.GUILayoutWindow(54665949, wnd_rect, _drawClassicGUI, Loc.T("ModName", "Resonant Orbit Calculator"), winStyle);
             }
-
         }
 
         static public string sNumSats = "3";
@@ -211,7 +238,7 @@ namespace ResonantOrbitCalculator
         GUIContent UpArrow, DownArrow;
 
 
-        void _drawGUI(int id)
+        void _drawClassicGUI(int id)
         {
             UpArrow = ResonantOrbitCalculator.upContent;
             DownArrow = ResonantOrbitCalculator.downContent;
