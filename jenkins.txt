@@ -31,8 +31,9 @@
 
 # 3:SOURCEFILE, DESTDIR
 3:ResonantOrbitCalculator.version,GameData/ResonantOrbitCalculator
-#3:LICENSE.md,GameData/KerbalHotSeat
-#3:README.md,GameData/KerbalHotSeat
+3:ChangeLog.cfg,GameData/ResonantOrbitCalculator
+3:License.txt,GameData/ResonantOrbitCalculator
+3:README.md,GameData/ResonantOrbitCalculator
 
 # 4:SOURCDIR, DESTDIR
 #4:Textures,GameData/ManeuverQueue/Textures
