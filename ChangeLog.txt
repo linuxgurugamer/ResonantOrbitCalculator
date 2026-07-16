@@ -1,5 +1,10 @@
 ﻿ChangeLog
 
+0.0.8.1
+	Added support for KerbalChangelog
+	Thanks to github user @Aebestach for this:
+		Add configurable multi-resolution UI
+
 0.0.8
 	Thanks to github user @Aebestach for this:
 		fixes for localization and conversion.
