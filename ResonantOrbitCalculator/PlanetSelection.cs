@@ -87,20 +87,7 @@ namespace ResonantOrbitCalculator
             isActive = true;
             GUI.color = new Color(0.85f, 0.85f, 0.85f, 1);
 
-            winStyle = new GUIStyle(HighLogic.Skin.window);
-            winStyle.active.background = winStyle.normal.background;
-            Texture2D tex = winStyle.normal.background; //.CreateReadable();
-
-            var pixels = tex.GetPixels32();
-            for (int i = 0; i < pixels.Length; ++i)
-                pixels[i].a = 255;
-
-            tex.SetPixels32(pixels);
-            tex.Apply();
-
-            winStyle.active.background = tex;
-            winStyle.focused.background = tex;
-            winStyle.normal.background = tex;
+            winStyle = GraphWindow.CreateWindowStyle(HighLogic.Skin);
 
             loadBodyImage(selectedBody.name);
         }
@@ -108,14 +95,44 @@ namespace ResonantOrbitCalculator
         void OnDestroy()
         {
             isActive = false;
+            if (ResonantOrbitCalculator.Instance != null
+                && ResonantOrbitCalculator.Instance.graphWindow != null
+                && ResonantOrbitCalculator.Instance.graphWindow.planetSelection == this)
+            {
+                ResonantOrbitCalculator.Instance.graphWindow.planetSelection = null;
+            }
         }
 
         public void OnGUI()
         {
-            planetWin.height = GraphWindow.wnd_rect.height;
             planetWin.x = GraphWindow.wnd_rect.x + GraphWindow.wnd_rect.width;
             planetWin.y = GraphWindow.wnd_rect.y;
-            ClickThruBlocker.GUILayoutWindow(565949, planetWin, planetSelWin, Loc.T("PlanetSelectionTitle", "Planetary Body Selection"), winStyle);
+            planetWin.height = GraphWindow.wnd_rect.height;
+
+            bool modern = GraphWindow.UseModernUI;
+            bool useAlternateSkin = HighLogic.CurrentGame.Parameters.CustomParams<ROCParams>().useAlternateSkin;
+            if (modern)
+            {
+                GUI.skin = GraphWindow.GetGuiSkin(useAlternateSkin);
+                GraphWindow.EnsureGuiStyles(useAlternateSkin);
+                UIScale.BeginGUI();
+                try
+                {
+                    ClickThruBlocker.GUILayoutWindow(565949, planetWin, planetSelWin, Loc.T("PlanetSelectionTitle", "Planetary Body Selection"), winStyle);
+                }
+                finally
+                {
+                    UIScale.EndGUI();
+                }
+            }
+            else
+            {
+                if (!useAlternateSkin)
+                    GUI.skin = HighLogic.Skin;
+                else
+                    GUI.skin = GraphWindow.GetGuiSkin(true);
+                ClickThruBlocker.GUILayoutWindow(565949, planetWin, planetSelWin, Loc.T("PlanetSelectionTitle", "Planetary Body Selection"), winStyle);
+            }
         }
 
         void planetSelWin(int id)
@@ -137,8 +154,10 @@ namespace ResonantOrbitCalculator
                     if (ResonantOrbitCalculator.Instance.graphWindow.shown)
                     {
                         loadBodyImage(selectedBody.name);
-
-                        ResonantOrbitCalculator.Instance.graphWindow.UpdateGraph();
+                        if (GraphWindow.UseModernUI)
+                            ResonantOrbitCalculator.Instance.graphWindow.RequestGraphUpdate();
+                        else
+                            ResonantOrbitCalculator.Instance.graphWindow.UpdateGraph();
                     }
                 }
             }
