@@ -4,6 +4,19 @@ using ToolbarControl_NS;
 namespace ResonantOrbitCalculator
 {
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
+    internal class UnitySkinCapture : MonoBehaviour
+    {
+        internal static GUISkin Skin;
+
+        void OnGUI()
+        {
+            if (Skin != null || Event.current.type != EventType.Repaint)
+                return;
+            Skin = GUI.skin;
+        }
+    }
+
+    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     public class RegisterToolbar : MonoBehaviour
     {
         void Start()
@@ -19,8 +32,6 @@ namespace ResonantOrbitCalculator
                 init_gui = true;
                 GraphWindow.InitGuiStyles();
             }
-
-
         }
     }
 }

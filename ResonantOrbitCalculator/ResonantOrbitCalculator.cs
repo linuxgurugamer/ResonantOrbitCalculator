@@ -153,6 +153,11 @@ namespace ResonantOrbitCalculator
         void OnALTrue()
         {
             graphWindow.shown = true;
+            if (GraphWindow.UseModernUI)
+            {
+                graphWindow.RequestLayoutRecalc();
+                graphWindow.RequestGraphUpdate();
+            }
         }
 
         void OnALFalse()
@@ -182,9 +187,11 @@ namespace ResonantOrbitCalculator
             // wait for graphics to render
             yield return new WaitForEndOfFrame();
 
-            Rect pixelRect = GraphWindow.wnd_rect; // copy values
+            Rect pixelRect = GraphWindow.UseModernUI
+                ? UIScale.LogicalToScreenRect(GraphWindow.wnd_rect)
+                : GraphWindow.wnd_rect;
 
-            pixelRect.y = Mathf.Max(Screen.height - GraphWindow.wnd_rect.y - GraphWindow.wnd_rect.height, 0f);
+            pixelRect.y = Mathf.Max(Screen.height - pixelRect.y - pixelRect.height, 0f);
 
             Texture2D captureTex = new Texture2D(Mathf.CeilToInt(pixelRect.width), Mathf.CeilToInt(pixelRect.height));
 
